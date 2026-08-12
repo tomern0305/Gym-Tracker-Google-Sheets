@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { KeyRound, ShieldCheck, ArrowRight, Dumbbell } from 'lucide-react';
+import { KeyRound, ShieldCheck, ArrowRight } from 'lucide-react';
 import { loginWithPassword } from '../services/storage';
+import { DumbbellLogo } from '../components/DumbbellLogo';
 
 interface LoginPageProps {
   onLoginSuccess: () => void;
@@ -24,11 +25,11 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
     <div className="min-h-screen w-full flex flex-col justify-between bg-[#0F1317] p-6 text-[#F4F1EA]">
       {/* Top Branding */}
       <div className="mt-12 text-center">
-        <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-[#6B8E78]/15 border border-[#6B8E78]/30 shadow-lg">
-          <Dumbbell className="h-8 w-8 text-[#6B8E78]" />
+        <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-3xl bg-[#171D22] border border-[#F4F1EA]/15 shadow-2xl">
+          <DumbbellLogo className="h-12 w-12" />
         </div>
-        <h1 className="font-serif text-3xl font-medium tracking-wide text-[#F4F1EA]">AURA GYM</h1>
-        <p className="mt-1.5 text-xs uppercase tracking-widest text-[#9E9B93]">Personal Performance Vault</p>
+        <h1 className="font-serif text-3xl font-bold tracking-wider text-[#F4F1EA]">IRON PULSE</h1>
+        <p className="mt-1.5 text-xs uppercase tracking-widest font-semibold text-[#6B8E78]">Personal Performance Vault</p>
       </div>
 
       {/* Main Password Form */}

@@ -3,12 +3,7 @@ import {
   Database, 
   Copy, 
   Check, 
-  RefreshCw, 
-  KeyRound, 
-  ExternalLink, 
-  ShieldCheck, 
-  Smartphone,
-  Cloud
+  RefreshCw 
 } from 'lucide-react';
 import { getSettings, saveSettings, fetchAllFromGoogleSheets, processPendingSyncQueue } from '../services/storage';
 import { GOOGLE_APPS_SCRIPT_CODE } from '../services/googleAppsScriptCode';
@@ -16,7 +11,6 @@ import { GOOGLE_APPS_SCRIPT_CODE } from '../services/googleAppsScriptCode';
 export const SettingsPage: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   const [settings, setSettingsState] = useState(getSettings());
   const [webAppUrl, setWebAppUrl] = useState(settings.googleWebAppUrl);
-  const [password, setPassword] = useState(settings.passwordHash || 'gym123');
   const [copied, setCopied] = useState(false);
   const [pingStatus, setPingStatus] = useState<string | null>(null);
   const [isTesting, setIsTesting] = useState(false);
@@ -32,7 +26,7 @@ export const SettingsPage: React.FC<{ onClose: () => void }> = ({ onClose }) => 
     e.preventDefault();
     const updated = saveSettings({
       googleWebAppUrl: webAppUrl.trim(),
-      passwordHash: password.trim() || 'gym123'
+      passwordHash: settings.passwordHash || 'gym123'
     });
     setSettingsState(updated);
     setSavedSuccess(true);
@@ -68,7 +62,7 @@ export const SettingsPage: React.FC<{ onClose: () => void }> = ({ onClose }) => 
       <div className="flex items-center justify-between">
         <div>
           <h2 className="font-serif text-2xl font-medium text-[#F4F1EA]">App Configuration</h2>
-          <p className="text-xs text-[#9E9B93]">Google Sheets sync & personal security</p>
+          <p className="text-xs text-[#9E9B93]">Google Sheets sync & device storage</p>
         </div>
         <button
           onClick={onClose}
@@ -158,30 +152,6 @@ export const SettingsPage: React.FC<{ onClose: () => void }> = ({ onClose }) => 
           <li>Set <strong className="text-[#F4F1EA]">Execute as: Me</strong> and <strong className="text-[#F4F1EA]">Who has access: Anyone</strong>.</li>
           <li>Copy the Web App URL and paste it in the box above!</li>
         </ol>
-      </div>
-
-      {/* Passcode Security */}
-      <div className="glass-card p-5 rounded-3xl border border-[#F4F1EA]/10 space-y-3">
-        <div className="flex items-center gap-2 text-xs font-semibold uppercase text-[#9E9B93] tracking-wider">
-          <KeyRound className="h-4 w-4 text-[#6B8E78]" />
-          <span>Passcode Security</span>
-        </div>
-
-        <div>
-          <label className="block text-xs text-[#9E9B93] mb-1">Vault Login Passcode</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full rounded-xl bg-[#0F1317] border border-[#F4F1EA]/15 p-3 text-xs font-mono text-[#F4F1EA] focus:outline-none focus:border-[#6B8E78]"
-          />
-        </div>
-        <button
-          onClick={handleSaveSettings}
-          className="w-full py-2.5 rounded-xl bg-[#1F272E] text-xs font-semibold text-[#F4F1EA] hover:bg-[#6B8E78]/20 transition touch-shrink"
-        >
-          Update Passcode
-        </button>
       </div>
     </div>
   );

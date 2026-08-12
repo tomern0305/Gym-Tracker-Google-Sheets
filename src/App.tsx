@@ -2,22 +2,19 @@ import React, { useState, useEffect } from 'react';
 import { Header } from './components/Header';
 import { BottomNav } from './components/BottomNav';
 import type { TabType } from './components/BottomNav';
-import { LoginPage } from './pages/LoginPage';
 import { DashboardPage } from './pages/DashboardPage';
+import { AnalyticsPage } from './pages/AnalyticsPage';
 import { ActiveWorkoutPage } from './pages/ActiveWorkoutPage';
 import { TemplatesPage } from './pages/TemplatesPage';
 import { ExercisesPage } from './pages/ExercisesPage';
 import { SettingsPage } from './pages/SettingsPage';
 import { 
-  isAuthenticated, 
-  logout, 
   fetchAllFromGoogleSheets, 
   processPendingSyncQueue 
 } from './services/storage';
-import type { WorkoutTemplate, WorkoutSessionLog } from './types';
+import type { WorkoutTemplate } from './types';
 
 export function App() {
-  const [authed, setAuthed] = useState<boolean>(isAuthenticated());
   const [activeTab, setActiveTab] = useState<TabType>('dashboard');
   const [showSettings, setShowSettings] = useState(false);
 
@@ -28,21 +25,10 @@ export function App() {
   } | null>(null);
 
   useEffect(() => {
-    if (authed) {
-      // Auto fetch latest cloud logs & process any pending offline queue
-      fetchAllFromGoogleSheets();
-      processPendingSyncQueue();
-    }
-  }, [authed]);
-
-  const handleLoginSuccess = () => {
-    setAuthed(true);
-  };
-
-  const handleLogout = () => {
-    logout();
-    setAuthed(false);
-  };
+    // Auto fetch cloud logs & process any pending offline queue on app launch
+    fetchAllFromGoogleSheets();
+    processPendingSyncQueue();
+  }, []);
 
   const handleStartWorkout = (workoutType: string, template?: WorkoutTemplate) => {
     setActiveWorkoutConfig({ workoutType, template });
@@ -59,17 +45,11 @@ export function App() {
     }
   };
 
-  // If unauthenticated, render single password login screen
-  if (!authed) {
-    return <LoginPage onLoginSuccess={handleLoginSuccess} />;
-  }
-
   return (
     <div className="min-h-screen bg-[#0F1317] text-[#F4F1EA] flex flex-col font-sans selection:bg-[#6B8E78] selection:text-[#0F1317]">
       {/* Header */}
       <Header
         onOpenSettings={() => setShowSettings(true)}
-        onLogout={handleLogout}
       />
 
       {/* Main Page Area */}
@@ -88,6 +68,8 @@ export function App() {
             onStartWorkout={handleStartWorkout}
             onViewLog={() => {}}
           />
+        ) : activeTab === 'analytics' ? (
+          <AnalyticsPage />
         ) : activeTab === 'templates' ? (
           <TemplatesPage />
         ) : activeTab === 'exercises' ? (

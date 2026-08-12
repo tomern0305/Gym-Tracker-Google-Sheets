@@ -29,7 +29,7 @@ function handleRequest(e) {
 
     if (action === 'ping') {
       output.success = true;
-      output.data = { status: 'online', app: 'Aura Gym Tracker' };
+      output.data = { status: 'online', app: 'Iron Pulse Gym Tracker' };
     } else if (action === 'get_all') {
       output.data = {
         logs: readLogsSheet(ss),
@@ -41,6 +41,10 @@ function handleRequest(e) {
       appendLog(ss, params.log);
       output.success = true;
       output.message = 'Workout session saved successfully';
+    } else if (action === 'delete_log' || action === 'deleteLog') {
+      deleteLogFromSheet(ss, params.logId);
+      output.success = true;
+      output.message = 'Log deleted successfully';
     } else if (action === 'save_templates') {
       saveJsonSheet(ss, 'Templates', params.templates);
       output.success = true;
@@ -151,6 +155,9 @@ function appendLog(ss, log) {
   var now = new Date().toISOString();
   if (!log || !log.exercises) return;
 
+  // First delete any previous entries for this log ID if updating
+  deleteLogFromSheet(ss, log.id);
+
   for (var i = 0; i < log.exercises.length; i++) {
     var ex = log.exercises[i];
     if (ex.type === 'cardio' && ex.cardio) {
@@ -190,6 +197,18 @@ function appendLog(ss, log) {
           now
         ]);
       }
+    }
+  }
+}
+
+function deleteLogFromSheet(ss, logId) {
+  if (!logId) return;
+  var sheet = ss.getSheetByName('Logs');
+  if (!sheet) return;
+  var data = sheet.getDataRange().getValues();
+  for (var i = data.length - 1; i >= 1; i--) {
+    if (String(data[i][0]) === String(logId)) {
+      sheet.deleteRow(i + 1);
     }
   }
 }

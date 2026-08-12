@@ -142,6 +142,25 @@ export function saveWorkoutLog(log: WorkoutSessionLog): void {
 export function deleteWorkoutLog(logId: string): void {
   const logs = getWorkoutLogs().filter(l => l.id !== logId);
   localStorage.setItem(KEYS.LOGS, JSON.stringify(logs));
+  window.dispatchEvent(new Event('aura_data_updated'));
+  syncDeleteLogToGoogleSheets(logId);
+}
+
+export async function syncDeleteLogToGoogleSheets(logId: string): Promise<boolean> {
+  const settings = getSettings();
+  if (!settings.googleWebAppUrl) return false;
+
+  try {
+    const response = await fetch(settings.googleWebAppUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action: 'delete_log', logId })
+    });
+    const json = await response.json();
+    return json.success === true;
+  } catch (e) {
+    return false;
+  }
 }
 
 // --- Benchmark & Historical Reference Query ---
