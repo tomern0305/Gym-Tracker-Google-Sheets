@@ -177,6 +177,23 @@ export function getPreviousBenchmark(exerciseName: string): PreviousBenchmark | 
   return null;
 }
 
+export function getLastSessionExerciseData(exerciseName: string): { sets?: StrengthSet[]; cardio?: CardioData; date?: string } | null {
+  const logs = getWorkoutLogs();
+  for (const log of logs) {
+    const matched = log.exercises.find(
+      e => e.exerciseName.toLowerCase().trim() === exerciseName.toLowerCase().trim()
+    );
+    if (matched) {
+      return {
+        sets: matched.sets,
+        cardio: matched.cardio,
+        date: log.date
+      };
+    }
+  }
+  return null;
+}
+
 // --- Google Sheets Sync & Network Operations ---
 export async function syncLogToGoogleSheets(log: WorkoutSessionLog): Promise<boolean> {
   const settings = getSettings();

@@ -1,31 +1,32 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Plus, 
-  Trash2, 
-  Check, 
-  ChevronRight, 
-  History, 
-  Dumbbell, 
-  Play, 
-  Pause, 
-  RotateCcw, 
+import {
+  Plus,
+  Trash2,
+  Check,
+  ChevronRight,
+  History,
+  Dumbbell,
+  Play,
+  Pause,
+  RotateCcw,
   ArrowLeft,
   CheckCircle2,
   AlertCircle
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
-import type { 
-  LoggedExercise, 
-  WorkoutSessionLog, 
-  Exercise, 
-  WorkoutTemplate, 
-  StrengthSet, 
-  CardioData 
+import type {
+  LoggedExercise,
+  WorkoutSessionLog,
+  Exercise,
+  WorkoutTemplate,
+  StrengthSet,
+  CardioData
 } from '../types';
-import { 
-  getExercises, 
-  getPreviousBenchmark, 
-  saveWorkoutLog 
+import {
+  getExercises,
+  getPreviousBenchmark,
+  getLastSessionExerciseData,
+  saveWorkoutLog
 } from '../services/storage';
 import { ModalDrawer } from '../components/ModalDrawer';
 
@@ -60,7 +61,7 @@ export const ActiveWorkoutPage: React.FC<ActiveWorkoutPageProps> = ({
         .map(e => createEmptyLoggedExercise(e));
       setExercises(mapped);
     } else {
-      // Default to 2 exercises matching category or general
+      // Default to 3 exercises matching category or general
       const defaults = allExercises.slice(0, 3).map(e => createEmptyLoggedExercise(e));
       setExercises(defaults);
     }
@@ -80,27 +81,45 @@ export const ActiveWorkoutPage: React.FC<ActiveWorkoutPageProps> = ({
   }, [timerActive]);
 
   function createEmptyLoggedExercise(ex: Exercise): LoggedExercise {
+    const lastSession = getLastSessionExerciseData(ex.name);
+
     if (ex.type === 'cardio') {
+      const durationMin = lastSession?.cardio?.durationMin ?? 15;
+      const resistanceLevel = lastSession?.cardio?.resistanceLevel ?? 5;
       return {
         exerciseId: ex.id,
         exerciseName: ex.name,
         type: 'cardio',
         category: ex.category,
         sets: [],
-        cardio: { durationMin: 15, resistanceLevel: 5 },
+        cardio: { durationMin, resistanceLevel },
         notes: ex.defaultNotes
       };
     }
+
+    let initialSets: StrengthSet[] = [];
+    if (lastSession?.sets && lastSession.sets.length > 0) {
+      initialSets = lastSession.sets.map((s, idx) => ({
+        setNumber: idx + 1,
+        weightKg: s.weightKg,
+        reps: s.reps,
+        completed: false,
+        notes: s.notes
+      }));
+    } else {
+      initialSets = [
+        { setNumber: 1, weightKg: 30, reps: 10, completed: false },
+        { setNumber: 2, weightKg: 30, reps: 10, completed: false },
+        { setNumber: 3, weightKg: 30, reps: 10, completed: false }
+      ];
+    }
+
     return {
       exerciseId: ex.id,
       exerciseName: ex.name,
       type: 'strength',
       category: ex.category,
-      sets: [
-        { setNumber: 1, weightKg: 40, reps: 10, completed: false },
-        { setNumber: 2, weightKg: 40, reps: 10, completed: false },
-        { setNumber: 3, weightKg: 40, reps: 10, completed: false }
-      ],
+      sets: initialSets,
       notes: ex.defaultNotes
     };
   }
@@ -204,7 +223,7 @@ export const ActiveWorkoutPage: React.FC<ActiveWorkoutPageProps> = ({
         origin: { y: 0.6 },
         colors: ['#6B8E78', '#5B7B88', '#F4F1EA']
       });
-    } catch (e) {}
+    } catch (e) { }
 
     onFinish();
   };
@@ -258,8 +277,8 @@ export const ActiveWorkoutPage: React.FC<ActiveWorkoutPageProps> = ({
         </div>
 
         {exercises.map((ex, exIdx) => {
-          const completedCount = ex.type === 'strength' 
-            ? ex.sets.filter(s => s.completed).length 
+          const completedCount = ex.type === 'strength'
+            ? ex.sets.filter(s => s.completed).length
             : (ex.cardio ? 1 : 0);
           const totalCount = ex.type === 'strength' ? ex.sets.length : 1;
           const exBenchmark = getPreviousBenchmark(ex.exerciseName);
@@ -270,7 +289,7 @@ export const ActiveWorkoutPage: React.FC<ActiveWorkoutPageProps> = ({
               className="glass-card p-4 rounded-2xl border border-[#F4F1EA]/10 hover:border-[#6B8E78]/50 transition touch-shrink relative overflow-hidden"
             >
               <div className="flex items-center justify-between">
-                <div 
+                <div
                   className="flex-1 cursor-pointer"
                   onClick={() => setSelectedExIndex(exIdx)}
                 >
@@ -335,7 +354,7 @@ export const ActiveWorkoutPage: React.FC<ActiveWorkoutPageProps> = ({
           subtitle={`${activeExercise.category} • ${activeExercise.type.toUpperCase()}`}
         >
           {/* Historical Reference Alert Box */}
-          {benchmark && (
+          {/* {benchmark && (
             <div className="mb-4 glass-card p-3 rounded-xl border border-[#6B8E78]/30 bg-[#6B8E78]/10 flex items-start gap-2.5">
               <History className="h-4 w-4 text-[#6B8E78] mt-0.5 shrink-0" />
               <div>
@@ -343,7 +362,7 @@ export const ActiveWorkoutPage: React.FC<ActiveWorkoutPageProps> = ({
                 <span className="text-xs text-[#F4F1EA] font-mono">{benchmark.setsSummary || benchmark.cardioSummary}</span>
               </div>
             </div>
-          )}
+          )} */}
 
           {/* Strength Set Logging */}
           {activeExercise.type === 'strength' ? (
@@ -356,13 +375,12 @@ export const ActiveWorkoutPage: React.FC<ActiveWorkoutPageProps> = ({
               </div>
 
               {activeExercise.sets.map((set, sIdx) => (
-                <div 
+                <div
                   key={sIdx}
-                  className={`grid grid-cols-12 gap-2 items-center p-2.5 rounded-xl border transition ${
-                    set.completed 
-                      ? 'bg-[#6B8E78]/15 border-[#6B8E78]/40' 
+                  className={`grid grid-cols-12 gap-2 items-center p-2.5 rounded-xl border transition ${set.completed
+                      ? 'bg-[#6B8E78]/15 border-[#6B8E78]/40'
                       : 'bg-[#0F1317] border-[#F4F1EA]/10'
-                  }`}
+                    }`}
                 >
                   <span className="col-span-2 text-center text-xs font-bold text-[#F4F1EA]">#{set.setNumber}</span>
 
@@ -414,11 +432,10 @@ export const ActiveWorkoutPage: React.FC<ActiveWorkoutPageProps> = ({
                   <div className="col-span-2 flex items-center justify-center">
                     <button
                       onClick={() => handleToggleSetComplete(selectedExIndex, sIdx)}
-                      className={`h-8 w-8 rounded-lg flex items-center justify-center border transition touch-shrink ${
-                        set.completed 
-                          ? 'bg-[#6B8E78] border-[#6B8E78] text-[#0F1317]' 
+                      className={`h-8 w-8 rounded-lg flex items-center justify-center border transition touch-shrink ${set.completed
+                          ? 'bg-[#6B8E78] border-[#6B8E78] text-[#0F1317]'
                           : 'bg-[#171D22] border-[#F4F1EA]/20 text-[#9E9B93]'
-                      }`}
+                        }`}
                     >
                       <Check className="h-4 w-4 stroke-[3]" />
                     </button>

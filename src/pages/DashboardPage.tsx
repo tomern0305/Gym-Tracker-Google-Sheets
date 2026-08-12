@@ -84,6 +84,8 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onStartWorkout, on
   };
 
   const todayStr = new Date().toISOString().split('T')[0];
+  const todayLog = logsByDate[todayStr];
+  const hasLoggedToday = Boolean(todayLog);
 
   return (
     <div className="space-y-6 pb-24 animate-fade-in">
@@ -94,23 +96,35 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onStartWorkout, on
         <div className="flex items-center justify-between">
           <div>
             <div className="flex items-center gap-2 text-xs text-[#6B8E78] font-medium uppercase tracking-wider mb-1">
-              <Sparkles className="h-3.5 w-3.5" />
-              <span>Ready for Today's Session</span>
+              {hasLoggedToday ? <CheckCircle2 className="h-3.5 w-3.5 text-[#6B8E78]" /> : <Sparkles className="h-3.5 w-3.5" />}
+              <span>{hasLoggedToday ? "Today's Session Complete" : "Ready for Today's Session"}</span>
             </div>
-            <h2 className="font-serif text-2xl font-medium text-[#F4F1EA]">What are we hitting today?</h2>
+            <h2 className="font-serif text-2xl font-medium text-[#F4F1EA]">
+              {hasLoggedToday ? todayLog.workoutType : "What are we hitting today?"}
+            </h2>
           </div>
           <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#6B8E78]/20 border border-[#6B8E78]/40">
-            <Flame className="h-6 w-6 text-[#6B8E78]" />
+            {hasLoggedToday ? <CheckCircle2 className="h-6 w-6 text-[#6B8E78]" /> : <Flame className="h-6 w-6 text-[#6B8E78]" />}
           </div>
         </div>
 
-        <button
-          onClick={() => setShowStartSheet(true)}
-          className="mt-5 w-full flex items-center justify-center gap-2.5 rounded-2xl bg-[#6B8E78] py-4 text-base font-semibold text-[#0F1317] hover:bg-[#5C7C68] transition touch-shrink shadow-lg font-sans"
-        >
-          <Zap className="h-5 w-5 fill-[#0F1317]" />
-          <span>Start a Workout</span>
-        </button>
+        {hasLoggedToday ? (
+          <button
+            disabled
+            className="mt-5 w-full flex items-center justify-center gap-2.5 rounded-2xl bg-[#6B8E78]/20 border border-[#6B8E78]/40 py-3.5 text-sm font-semibold text-[#6B8E78] cursor-not-allowed font-sans"
+          >
+            <CheckCircle2 className="h-4 w-4" />
+            <span>Workout Completed Today (1 Per Day)</span>
+          </button>
+        ) : (
+          <button
+            onClick={() => setShowStartSheet(true)}
+            className="mt-5 w-full flex items-center justify-center gap-2.5 rounded-2xl bg-[#6B8E78] py-4 text-base font-semibold text-[#0F1317] hover:bg-[#5C7C68] transition touch-shrink shadow-lg font-sans"
+          >
+            <Zap className="h-5 w-5 fill-[#0F1317]" />
+            <span>Start a Workout</span>
+          </button>
+        )}
       </div>
 
       {/* Monthly Summary Strip */}
