@@ -25,8 +25,17 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onStartWorkout, on
   const [showStartSheet, setShowStartSheet] = useState(false);
   const [customWorkoutName, setCustomWorkoutName] = useState('');
 
-  const logs = getWorkoutLogs();
-  const templates = getTemplates();
+  const [logs, setLogs] = useState<WorkoutSessionLog[]>(getWorkoutLogs());
+  const [templates, setTemplates] = useState<WorkoutTemplate[]>(getTemplates());
+
+  React.useEffect(() => {
+    const handleUpdate = () => {
+      setLogs(getWorkoutLogs());
+      setTemplates(getTemplates());
+    };
+    window.addEventListener('aura_data_updated', handleUpdate);
+    return () => window.removeEventListener('aura_data_updated', handleUpdate);
+  }, []);
 
   // Calendar math
   const year = currentDate.getFullYear();

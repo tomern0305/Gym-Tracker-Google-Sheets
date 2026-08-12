@@ -8,6 +8,14 @@ export const ExercisesPage: React.FC = () => {
   const [exercises, setExercisesState] = useState<Exercise[]>(getExercises());
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   
+  React.useEffect(() => {
+    const handleUpdate = () => {
+      setExercisesState(getExercises());
+    };
+    window.addEventListener('aura_data_updated', handleUpdate);
+    return () => window.removeEventListener('aura_data_updated', handleUpdate);
+  }, []);
+  
   const [editingEx, setEditingEx] = useState<Exercise | null>(null);
   const [name, setName] = useState('');
   const [category, setCategory] = useState<MuscleCategory>('Chest');

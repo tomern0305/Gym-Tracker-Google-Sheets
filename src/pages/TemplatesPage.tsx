@@ -6,7 +6,16 @@ import { ModalDrawer } from '../components/ModalDrawer';
 
 export const TemplatesPage: React.FC = () => {
   const [templates, setTemplatesState] = useState<WorkoutTemplate[]>(getTemplates());
-  const exercises = getExercises();
+  const [exercises, setExercisesState] = useState<Exercise[]>(getExercises());
+
+  React.useEffect(() => {
+    const handleUpdate = () => {
+      setTemplatesState(getTemplates());
+      setExercisesState(getExercises());
+    };
+    window.addEventListener('aura_data_updated', handleUpdate);
+    return () => window.removeEventListener('aura_data_updated', handleUpdate);
+  }, []);
 
   const [editingTemplate, setEditingTemplate] = useState<WorkoutTemplate | null>(null);
   const [templateName, setTemplateName] = useState('');

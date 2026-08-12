@@ -247,6 +247,7 @@ export async function fetchAllFromGoogleSheets(): Promise<boolean> {
         localStorage.setItem(KEYS.EXERCISES, JSON.stringify(json.data.exercises));
       }
       saveSettings({ lastSyncedAt: Date.now() });
+      window.dispatchEvent(new Event('aura_data_updated'));
       return true;
     }
   } catch (e) {}

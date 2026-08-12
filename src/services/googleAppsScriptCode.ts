@@ -196,14 +196,32 @@ function appendLog(ss, log) {
 
 function readJsonSheet(ss, tabName) {
   var sheet = ss.getSheetByName(tabName);
+  if (!sheet) return [];
   var data = sheet.getDataRange().getValues();
   if (data.length <= 1) return [];
 
   var list = [];
   for (var i = 1; i < data.length; i++) {
+    var row = data[i];
+    if (!row[0] && !row[1]) continue;
+
     try {
-      if (data[i][1]) {
-        list.push(JSON.parse(data[i][1]));
+      if (row[1] && String(row[1]).trim().indexOf('{') === 0) {
+        list.push(JSON.parse(row[1]));
+      } else if (tabName === 'Exercises') {
+        list.push({
+          id: String(row[0] || ('ex-' + i)),
+          name: String(row[1] || row[0] || ('Exercise ' + i)),
+          category: String(row[2] || 'Chest'),
+          type: String(row[3] || 'strength').toLowerCase(),
+          defaultNotes: String(row[4] || '')
+        });
+      } else if (tabName === 'Templates') {
+        list.push({
+          id: String(row[0] || ('tmpl-' + i)),
+          name: String(row[1] || row[0] || ('Routine ' + i)),
+          exerciseIds: []
+        });
       }
     } catch (e) {}
   }
