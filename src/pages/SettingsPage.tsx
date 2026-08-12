@@ -1,9 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Database, 
   Copy, 
   Check, 
-  RefreshCw 
+  RefreshCw,
+  Smartphone,
+  Share,
+  PlusSquare,
+  Download
 } from 'lucide-react';
 import { getSettings, saveSettings, fetchAllFromGoogleSheets, processPendingSyncQueue } from '../services/storage';
 import { GOOGLE_APPS_SCRIPT_CODE } from '../services/googleAppsScriptCode';
@@ -15,6 +19,33 @@ export const SettingsPage: React.FC<{ onClose: () => void }> = ({ onClose }) => 
   const [pingStatus, setPingStatus] = useState<string | null>(null);
   const [isTesting, setIsTesting] = useState(false);
   const [savedSuccess, setSavedSuccess] = useState(false);
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const [isStandalone, setIsStandalone] = useState(false);
+
+  useEffect(() => {
+    // Check if running as PWA standalone app
+    const checkStandalone = window.matchMedia('(display-mode: standalone)').matches || (navigator as any).standalone;
+    setIsStandalone(Boolean(checkStandalone));
+
+    // Listen for PWA install prompt on Android/Chrome
+    const handleBeforeInstallPrompt = (e: any) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+    };
+
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    return () => window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+  }, []);
+
+  const handleInstallClick = async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === 'accepted') {
+      setDeferredPrompt(null);
+      setIsStandalone(true);
+    }
+  };
 
   const handleCopyCode = () => {
     navigator.clipboard.writeText(GOOGLE_APPS_SCRIPT_CODE);
@@ -62,7 +93,7 @@ export const SettingsPage: React.FC<{ onClose: () => void }> = ({ onClose }) => 
       <div className="flex items-center justify-between">
         <div>
           <h2 className="font-serif text-2xl font-medium text-[#F4F1EA]">App Configuration</h2>
-          <p className="text-xs text-[#9E9B93]">Google Sheets sync & device storage</p>
+          <p className="text-xs text-[#9E9B93]">Google Sheets sync & mobile installation</p>
         </div>
         <button
           onClick={onClose}
@@ -70,6 +101,54 @@ export const SettingsPage: React.FC<{ onClose: () => void }> = ({ onClose }) => 
         >
           Done
         </button>
+      </div>
+
+      {/* Mobile PWA Home Screen Installation Card */}
+      <div className="glass-card-elevated p-5 rounded-3xl border border-[#6B8E78]/30 bg-[#6B8E78]/10 space-y-3">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#6B8E78]/20 border border-[#6B8E78]/40">
+              <Smartphone className="h-5 w-5 text-[#6B8E78]" />
+            </div>
+            <div>
+              <h3 className="font-serif text-lg font-medium text-[#F4F1EA]">Add to Home Screen</h3>
+              <p className="text-xs text-[#9E9B93]">Native full-screen mobile experience</p>
+            </div>
+          </div>
+          {isStandalone && (
+            <span className="text-[10px] font-bold uppercase tracking-wider bg-[#6B8E78] text-[#0F1317] px-2 py-1 rounded-md">
+              Installed
+            </span>
+          )}
+        </div>
+
+        {deferredPrompt ? (
+          <button
+            onClick={handleInstallClick}
+            className="w-full flex items-center justify-center gap-2 rounded-2xl bg-[#6B8E78] py-3 text-sm font-semibold text-[#0F1317] hover:bg-[#5C7C68] transition touch-shrink shadow-lg font-sans"
+          >
+            <Download className="h-4 w-4" />
+            <span>Install App on Device</span>
+          </button>
+        ) : (
+          <div className="space-y-2 text-xs text-[#9E9B93] leading-relaxed pt-1">
+            <div className="flex items-start gap-2.5 bg-[#0F1317]/60 p-3 rounded-2xl border border-[#F4F1EA]/10">
+              <Share className="h-4 w-4 text-[#6B8E78] mt-0.5 shrink-0" />
+              <div>
+                <strong className="text-[#F4F1EA] block mb-0.5">iPhone / iPad (Safari):</strong>
+                Tap the <span className="text-[#6B8E78] font-semibold">Share</span> icon in Safari navigation bar, then select <span className="text-[#F4F1EA] font-semibold">"Add to Home Screen"</span>.
+              </div>
+            </div>
+
+            <div className="flex items-start gap-2.5 bg-[#0F1317]/60 p-3 rounded-2xl border border-[#F4F1EA]/10">
+              <PlusSquare className="h-4 w-4 text-[#6B8E78] mt-0.5 shrink-0" />
+              <div>
+                <strong className="text-[#F4F1EA] block mb-0.5">Android (Chrome):</strong>
+                Tap Chrome menu <span className="text-[#6B8E78] font-semibold">⋮</span>, then tap <span className="text-[#F4F1EA] font-semibold">"Install App"</span> or <span className="text-[#F4F1EA] font-semibold">"Add to Home screen"</span>.
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Google Sheets Connection Box */}

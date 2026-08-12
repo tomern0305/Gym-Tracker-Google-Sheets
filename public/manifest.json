@@ -1,0 +1,18 @@
+{
+  "short_name": "IRON PULSE",
+  "name": "IRON PULSE • Personal Gym Tracker",
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "type": "image/svg+xml",
+      "sizes": "192x192 512x512",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "./",
+  "background_color": "#0F1317",
+  "theme_color": "#0F1317",
+  "display": "standalone",
+  "orientation": "portrait",
+  "scope": "./"
+}
