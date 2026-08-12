@@ -77,11 +77,14 @@ export function getExercises(): Exercise[] {
   if (stored) {
     try {
       const parsed = JSON.parse(stored);
-      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      if (Array.isArray(parsed)) {
+        // Filter out sample demo items if present
+        const cleaned = parsed.filter(e => !e.id.startsWith('ex-1') && !e.id.startsWith('ex-2') && !e.id.startsWith('ex-3') && !e.id.startsWith('ex-4') && !e.id.startsWith('ex-5') && !e.id.startsWith('ex-6') && !e.id.startsWith('ex-7') && !e.id.startsWith('ex-8') && !e.id.startsWith('ex-9') && !e.id.startsWith('ex-10') && !e.id.startsWith('ex-[#]'));
+        return cleaned;
+      }
     } catch (e) {}
   }
-  localStorage.setItem(KEYS.EXERCISES, JSON.stringify(INITIAL_EXERCISES));
-  return INITIAL_EXERCISES;
+  return [];
 }
 
 export function saveExercises(exercises: Exercise[]): void {
@@ -94,11 +97,13 @@ export function getTemplates(): WorkoutTemplate[] {
   if (stored) {
     try {
       const parsed = JSON.parse(stored);
-      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      if (Array.isArray(parsed)) {
+        const cleaned = parsed.filter(t => !t.id.startsWith('tmpl-1') && !t.id.startsWith('tmpl-2') && !t.id.startsWith('tmpl-3') && !t.id.startsWith('tmpl-4'));
+        return cleaned;
+      }
     } catch (e) {}
   }
-  localStorage.setItem(KEYS.TEMPLATES, JSON.stringify(INITIAL_TEMPLATES));
-  return INITIAL_TEMPLATES;
+  return [];
 }
 
 export function saveTemplates(templates: WorkoutTemplate[]): void {
@@ -111,11 +116,13 @@ export function getWorkoutLogs(): WorkoutSessionLog[] {
   if (stored) {
     try {
       const parsed = JSON.parse(stored);
-      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      if (Array.isArray(parsed)) {
+        const cleaned = parsed.filter(l => !l.id.startsWith('log-demo-'));
+        return cleaned;
+      }
     } catch (e) {}
   }
-  localStorage.setItem(KEYS.LOGS, JSON.stringify(INITIAL_LOGS));
-  return INITIAL_LOGS;
+  return [];
 }
 
 export function saveWorkoutLog(log: WorkoutSessionLog): void {
