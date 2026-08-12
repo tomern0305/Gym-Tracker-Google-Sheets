@@ -72,15 +72,17 @@ export function saveSettings(settings: Partial<AppSettings>): AppSettings {
 }
 
 // --- Local & Remote Data Services ---
+const DEMO_EXERCISE_IDS = new Set(['ex-1','ex-2','ex-3','ex-4','ex-5','ex-6','ex-7','ex-8','ex-9','ex-10','ex-11','ex-12','ex-13','ex-14','ex-15','ex-16']);
+const DEMO_TEMPLATE_IDS = new Set(['tmpl-1','tmpl-2','tmpl-3','tmpl-4']);
+const DEMO_LOG_IDS = new Set(['log-demo-1','log-demo-2']);
+
 export function getExercises(): Exercise[] {
   const stored = localStorage.getItem(KEYS.EXERCISES);
   if (stored) {
     try {
       const parsed = JSON.parse(stored);
       if (Array.isArray(parsed)) {
-        // Filter out sample demo items if present
-        const cleaned = parsed.filter(e => !e.id.startsWith('ex-1') && !e.id.startsWith('ex-2') && !e.id.startsWith('ex-3') && !e.id.startsWith('ex-4') && !e.id.startsWith('ex-5') && !e.id.startsWith('ex-6') && !e.id.startsWith('ex-7') && !e.id.startsWith('ex-8') && !e.id.startsWith('ex-9') && !e.id.startsWith('ex-10') && !e.id.startsWith('ex-[#]'));
-        return cleaned;
+        return parsed.filter(e => e && e.id && !DEMO_EXERCISE_IDS.has(e.id));
       }
     } catch (e) {}
   }
@@ -98,8 +100,7 @@ export function getTemplates(): WorkoutTemplate[] {
     try {
       const parsed = JSON.parse(stored);
       if (Array.isArray(parsed)) {
-        const cleaned = parsed.filter(t => !t.id.startsWith('tmpl-1') && !t.id.startsWith('tmpl-2') && !t.id.startsWith('tmpl-3') && !t.id.startsWith('tmpl-4'));
-        return cleaned;
+        return parsed.filter(t => t && t.id && !DEMO_TEMPLATE_IDS.has(t.id));
       }
     } catch (e) {}
   }
@@ -117,8 +118,7 @@ export function getWorkoutLogs(): WorkoutSessionLog[] {
     try {
       const parsed = JSON.parse(stored);
       if (Array.isArray(parsed)) {
-        const cleaned = parsed.filter(l => !l.id.startsWith('log-demo-'));
-        return cleaned;
+        return parsed.filter(l => l && l.id && !DEMO_LOG_IDS.has(l.id));
       }
     } catch (e) {}
   }

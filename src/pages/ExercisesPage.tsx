@@ -7,7 +7,7 @@ import { ModalDrawer } from '../components/ModalDrawer';
 export const ExercisesPage: React.FC = () => {
   const [exercises, setExercisesState] = useState<Exercise[]>(getExercises());
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
-  
+
   React.useEffect(() => {
     const handleUpdate = () => {
       setExercisesState(getExercises());
@@ -15,7 +15,7 @@ export const ExercisesPage: React.FC = () => {
     window.addEventListener('aura_data_updated', handleUpdate);
     return () => window.removeEventListener('aura_data_updated', handleUpdate);
   }, []);
-  
+
   const [editingEx, setEditingEx] = useState<Exercise | null>(null);
   const [name, setName] = useState('');
   const [category, setCategory] = useState<MuscleCategory>('Chest');
@@ -25,8 +25,8 @@ export const ExercisesPage: React.FC = () => {
 
   const categories: string[] = ['All', 'Chest', 'Back', 'Legs', 'Shoulders', 'Arms', 'Core', 'Cardio'];
 
-  const filteredExercises = selectedCategory === 'All' 
-    ? exercises 
+  const filteredExercises = selectedCategory === 'All'
+    ? exercises
     : exercises.filter(e => e.category === selectedCategory);
 
   const handleOpenNew = () => {
@@ -53,9 +53,9 @@ export const ExercisesPage: React.FC = () => {
 
     let updated: Exercise[];
     if (editingEx) {
-      updated = exercises.map(ex => 
-        ex.id === editingEx.id 
-          ? { ...ex, name: name.trim(), category, type, defaultNotes: defaultNotes.trim() } 
+      updated = exercises.map(ex =>
+        ex.id === editingEx.id
+          ? { ...ex, name: name.trim(), category, type, defaultNotes: defaultNotes.trim() }
           : ex
       );
     } else {
@@ -105,11 +105,10 @@ export const ExercisesPage: React.FC = () => {
           <button
             key={cat}
             onClick={() => setSelectedCategory(cat)}
-            className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition touch-shrink ${
-              selectedCategory === cat 
-                ? 'bg-[#6B8E78] text-[#0F1317] font-semibold' 
-                : 'bg-[#171D22] border border-[#F4F1EA]/10 text-[#9E9B93] hover:text-[#F4F1EA]'
-            }`}
+            className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition touch-shrink ${selectedCategory === cat
+              ? 'bg-[#6B8E78] text-[#0F1317] font-semibold'
+              : 'bg-[#171D22] border border-[#F4F1EA]/10 text-[#9E9B93] hover:text-[#F4F1EA]'
+              }`}
           >
             {cat}
           </button>
@@ -163,69 +162,71 @@ export const ExercisesPage: React.FC = () => {
           title={editingEx ? 'Edit Movement' : 'Add New Movement'}
           subtitle="Configure machine defaults and muscle targeting"
         >
-          <form onSubmit={handleSave} className="space-y-4">
-            <div>
-              <label className="block text-xs font-semibold text-[#9E9B93] uppercase tracking-wider mb-1.5">
-                Movement / Machine Name
-              </label>
-              <input
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="e.g. Incline Bench Press, Hack Squat..."
-                required
-                className="w-full rounded-xl bg-[#0F1317] border border-[#F4F1EA]/15 p-3 text-sm text-[#F4F1EA] placeholder-[#9E9B93]/40 focus:outline-none focus:border-[#6B8E78]"
-              />
-            </div>
-
-            <div className="grid grid-cols-2 gap-3">
+          <form onSubmit={handleSave} className="flex flex-col justify-between min-h-full space-y-4">
+            <div className="space-y-4">
               <div>
                 <label className="block text-xs font-semibold text-[#9E9B93] uppercase tracking-wider mb-1.5">
-                  Target Muscle
+                  Movement / Machine Name
                 </label>
-                <select
-                  value={category}
-                  onChange={(e) => setCategory(e.target.value as MuscleCategory)}
-                  className="w-full rounded-xl bg-[#0F1317] border border-[#F4F1EA]/15 p-3 text-sm text-[#F4F1EA] focus:outline-none focus:border-[#6B8E78]"
-                >
-                  {categories.filter(c => c !== 'All').map(c => (
-                    <option key={c} value={c}>{c}</option>
-                  ))}
-                </select>
+                <input
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="e.g. Incline Bench Press, Hack Squat..."
+                  required
+                  className="w-full rounded-xl bg-[#0F1317] border border-[#F4F1EA]/15 p-3 text-sm text-[#F4F1EA] placeholder-[#9E9B93]/40 focus:outline-none focus:border-[#6B8E78]"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-semibold text-[#9E9B93] uppercase tracking-wider mb-1.5">
+                    Target Muscle
+                  </label>
+                  <select
+                    value={category}
+                    onChange={(e) => setCategory(e.target.value as MuscleCategory)}
+                    className="w-full rounded-xl bg-[#0F1317] border border-[#F4F1EA]/15 p-3 text-sm text-[#F4F1EA] focus:outline-none focus:border-[#6B8E78]"
+                  >
+                    {categories.filter(c => c !== 'All').map(c => (
+                      <option key={c} value={c}>{c}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-[#9E9B93] uppercase tracking-wider mb-1.5">
+                    Type
+                  </label>
+                  <select
+                    value={type}
+                    onChange={(e) => setType(e.target.value as MovementType)}
+                    className="w-full rounded-xl bg-[#0F1317] border border-[#F4F1EA]/15 p-3 text-sm text-[#F4F1EA] focus:outline-none focus:border-[#6B8E78]"
+                  >
+                    <option value="strength">Strength (Sets/Reps)</option>
+                    <option value="cardio">Cardio (Time/Resistance)</option>
+                  </select>
+                </div>
               </div>
 
               <div>
                 <label className="block text-xs font-semibold text-[#9E9B93] uppercase tracking-wider mb-1.5">
-                  Type
+                  Default Machine Setup Notes (Optional)
                 </label>
-                <select
-                  value={type}
-                  onChange={(e) => setType(e.target.value as MovementType)}
-                  className="w-full rounded-xl bg-[#0F1317] border border-[#F4F1EA]/15 p-3 text-sm text-[#F4F1EA] focus:outline-none focus:border-[#6B8E78]"
-                >
-                  <option value="strength">Strength (Sets/Reps)</option>
-                  <option value="cardio">Cardio (Time/Resistance)</option>
-                </select>
+                <input
+                  type="text"
+                  value={defaultNotes}
+                  onChange={(e) => setDefaultNotes(e.target.value)}
+                  placeholder="e.g. Seat pin #4, Grip width #2"
+                  className="w-full rounded-xl bg-[#0F1317] border border-[#F4F1EA]/15 p-3 text-sm text-[#F4F1EA] placeholder-[#9E9B93]/40 focus:outline-none focus:border-[#6B8E78]"
+                />
               </div>
-            </div>
-
-            <div>
-              <label className="block text-xs font-semibold text-[#9E9B93] uppercase tracking-wider mb-1.5">
-                Default Machine Setup Notes (Optional)
-              </label>
-              <input
-                type="text"
-                value={defaultNotes}
-                onChange={(e) => setDefaultNotes(e.target.value)}
-                placeholder="e.g. Seat pin #4, Grip width #2"
-                className="w-full rounded-xl bg-[#0F1317] border border-[#F4F1EA]/15 p-3 text-sm text-[#F4F1EA] placeholder-[#9E9B93]/40 focus:outline-none focus:border-[#6B8E78]"
-              />
             </div>
 
             <button
               type="submit"
               disabled={!name.trim()}
-              className="w-full py-3 rounded-xl bg-[#6B8E78] font-semibold text-[#0F1317] disabled:opacity-40 hover:bg-[#5C7C68] transition touch-shrink mt-4 font-sans"
+              className="w-full py-3.5 rounded-xl bg-[#6B8E78] font-semibold text-sm text-[#0F1317] disabled:opacity-40 hover:bg-[#5C7C68] transition touch-shrink shrink-0 font-sans shadow-md mt-4"
             >
               Save Movement
             </button>

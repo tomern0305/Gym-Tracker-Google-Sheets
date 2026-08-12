@@ -149,57 +149,65 @@ export const TemplatesPage: React.FC = () => {
           title={editingTemplate ? 'Edit Routine Template' : 'Create New Routine'}
           subtitle="Select movements to include by default"
         >
-          <form onSubmit={handleSave} className="space-y-4">
-            <div>
-              <label className="block text-xs font-semibold text-[#9E9B93] uppercase tracking-wider mb-1.5">
-                Routine Name
-              </label>
-              <input
-                type="text"
-                value={templateName}
-                onChange={(e) => setTemplateName(e.target.value)}
-                placeholder="e.g. Upper Body Focus, Leg Day B..."
-                required
-                className="w-full rounded-xl bg-[#0F1317] border border-[#F4F1EA]/15 p-3 text-sm text-[#F4F1EA] placeholder-[#9E9B93]/40 focus:outline-none focus:border-[#6B8E78]"
-              />
-            </div>
+          <form onSubmit={handleSave} className="flex flex-col justify-between min-h-full space-y-4">
+            <div className="space-y-4">
+              <div>
+                <label className="block text-xs font-semibold text-[#9E9B93] uppercase tracking-wider mb-1.5">
+                  Routine Name
+                </label>
+                <input
+                  type="text"
+                  value={templateName}
+                  onChange={(e) => setTemplateName(e.target.value)}
+                  placeholder="e.g. Upper Body Focus, Leg Day B..."
+                  required
+                  className="w-full rounded-xl bg-[#0F1317] border border-[#F4F1EA]/15 p-3 text-sm text-[#F4F1EA] placeholder-[#9E9B93]/40 focus:outline-none focus:border-[#6B8E78]"
+                />
+              </div>
 
-            <div>
-              <label className="block text-xs font-semibold text-[#9E9B93] uppercase tracking-wider mb-2">
-                Select Movements ({selectedExIds.length})
-              </label>
-              <div className="space-y-2 pr-1">
-                {exercises.map((ex) => {
-                  const isSelected = selectedExIds.includes(ex.id);
-                  return (
-                    <div
-                      key={ex.id}
-                      onClick={() => handleToggleExerciseSelection(ex.id)}
-                      className={`flex items-center justify-between p-3 rounded-xl border cursor-pointer transition touch-shrink ${
-                        isSelected 
-                          ? 'bg-[#6B8E78]/15 border-[#6B8E78]/50 text-[#F4F1EA]' 
-                          : 'bg-[#0F1317] border-[#F4F1EA]/10 text-[#9E9B93]'
-                      }`}
-                    >
-                      <div>
-                        <span className="font-medium text-sm block">{ex.name}</span>
-                        <span className="text-[10px] uppercase font-semibold text-[#9E9B93]">{ex.category} • {ex.type}</span>
-                      </div>
-                      <div className={`h-6 w-6 rounded-md flex items-center justify-center border ${
-                        isSelected ? 'bg-[#6B8E78] border-[#6B8E78] text-[#0F1317]' : 'border-[#F4F1EA]/20'
-                      }`}>
-                        {isSelected && <Check className="h-3.5 w-3.5 stroke-[3]" />}
-                      </div>
-                    </div>
-                  );
-                })}
+              <div>
+                <label className="block text-xs font-semibold text-[#9E9B93] uppercase tracking-wider mb-2">
+                  Select Movements ({selectedExIds.length})
+                </label>
+                {exercises.length === 0 ? (
+                  <p className="text-xs text-[#9E9B93] italic p-4 rounded-xl bg-[#0F1317] border border-[#F4F1EA]/10 text-center leading-relaxed">
+                    No movements in library yet. Add movements from the Library tab first!
+                  </p>
+                ) : (
+                  <div className="space-y-2">
+                    {exercises.map((ex) => {
+                      const isSelected = selectedExIds.includes(ex.id);
+                      return (
+                        <div
+                          key={ex.id}
+                          onClick={() => handleToggleExerciseSelection(ex.id)}
+                          className={`flex items-center justify-between p-3 rounded-xl border cursor-pointer transition touch-shrink ${
+                            isSelected 
+                              ? 'bg-[#6B8E78]/15 border-[#6B8E78]/50 text-[#F4F1EA]' 
+                              : 'bg-[#0F1317] border-[#F4F1EA]/10 text-[#9E9B93]'
+                          }`}
+                        >
+                          <div>
+                            <span className="font-medium text-sm block">{ex.name}</span>
+                            <span className="text-[10px] uppercase font-semibold text-[#9E9B93]">{ex.category} • {ex.type}</span>
+                          </div>
+                          <div className={`h-6 w-6 rounded-md flex items-center justify-center border ${
+                            isSelected ? 'bg-[#6B8E78] border-[#6B8E78] text-[#0F1317]' : 'border-[#F4F1EA]/20'
+                          }`}>
+                            {isSelected && <Check className="h-3.5 w-3.5 stroke-[3]" />}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
             </div>
 
             <button
               type="submit"
               disabled={!templateName.trim()}
-              className="w-full py-3 rounded-xl bg-[#6B8E78] font-semibold text-[#0F1317] disabled:opacity-40 hover:bg-[#5C7C68] transition touch-shrink mt-4 font-sans"
+              className="w-full py-3.5 rounded-xl bg-[#6B8E78] font-semibold text-sm text-[#0F1317] disabled:opacity-40 hover:bg-[#5C7C68] transition touch-shrink shrink-0 font-sans shadow-md mt-4"
             >
               Save Template
             </button>

@@ -30,14 +30,15 @@ export const ModalDrawer: React.FC<ModalDrawerProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col justify-end sm:justify-center p-0 sm:p-4 bg-black/80 backdrop-blur-md animate-fade-in">
+    /* Outer Backdrop: pt-20 pushes everything down below the 64px header bar! */
+    <div className="fixed inset-0 z-50 flex flex-col justify-end sm:justify-center items-center p-3 pt-80 pb-20  animate-fade-in">
       {/* Backdrop tap to dismiss */}
       <div className="absolute inset-0" onClick={onClose} />
 
-      {/* Drawer / Modal Card */}
-      <div className="relative z-10 w-full max-w-md mx-auto max-h-[85vh] flex flex-col rounded-t-3xl sm:rounded-3xl border border-[#F4F1EA]/15 bg-[#171D22] p-5 shadow-2xl animate-slide-up overflow-hidden">
+      {/* Drawer / Modal Card - Fixed elegant height on all devices */}
+      <div className="relative z-10 w-full max-w-md mx-auto h-[85vh] sm:h-[580px] flex flex-col rounded-t-3xl sm:rounded-3xl border border-[#F4F1EA]/15 bg-[#171D22] p-5 shadow-2xl animate-slide-up ">
         {/* Handle pill (visible on mobile) */}
-        <div className="mx-auto mb-3 h-1.5 w-12 rounded-full bg-[#F4F1EA]/20 sm:hidden" />
+        <div className="mx-auto mb-3 h-1.5 w-12 rounded-full bg-[#F4F1EA]/20 shrink-0 sm:hidden" />
 
         {/* Header */}
         <div className="flex items-center justify-between pb-3 border-b border-[#F4F1EA]/10 shrink-0">
@@ -55,7 +56,7 @@ export const ModalDrawer: React.FC<ModalDrawerProps> = ({
         </div>
 
         {/* Scrollable Body Content */}
-        <div className="mt-4 flex-1 min-h-0 overflow-y-auto pr-1 pb-2 scrollbar-none">
+        <div className="mt-4 flex-1 min-h-0 overflow-y-auto pr-1 scrollbar-none">
           {children}
         </div>
       </div>
