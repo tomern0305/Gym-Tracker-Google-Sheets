@@ -28,7 +28,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
         <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-3xl bg-[#171D22] border border-[#F4F1EA]/15 shadow-2xl">
           <DumbbellLogo className="h-12 w-12" />
         </div>
-        <h1 className="font-serif text-3xl font-bold tracking-wider text-[#F4F1EA]">IRON PULSE</h1>
+        <h1 className="font-serif text-3xl font-bold tracking-wider text-[#F4F1EA]">Doom Tracker</h1>
         <p className="mt-1.5 text-xs uppercase tracking-widest font-semibold text-[#6B8E78]">Personal Performance Vault</p>
       </div>
 
@@ -54,11 +54,10 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
                 }}
                 placeholder="••••••••"
                 autoFocus
-                className={`w-full rounded-xl bg-[#0F1317] border px-4 py-3.5 text-center text-lg font-mono tracking-widest text-[#F4F1EA] placeholder-[#9E9B93]/40 focus:outline-none transition ${
-                  error 
-                    ? 'border-[#A85454] focus:ring-1 focus:ring-[#A85454]' 
+                className={`w-full rounded-xl bg-[#0F1317] border px-4 py-3.5 text-center text-lg font-mono tracking-widest text-[#F4F1EA] placeholder-[#9E9B93]/40 focus:outline-none transition ${error
+                    ? 'border-[#A85454] focus:ring-1 focus:ring-[#A85454]'
                     : 'border-[#F4F1EA]/15 focus:border-[#6B8E78] focus:ring-1 focus:ring-[#6B8E78]'
-                }`}
+                  }`}
               />
               <KeyRound className="absolute right-3.5 top-4 h-5 w-5 text-[#9E9B93]/50" />
             </div>
@@ -79,7 +78,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
         </form>
 
         <p className="mt-5 text-center text-[11px] text-[#9E9B93]/60 leading-relaxed">
-          Default passcode: <code className="text-[#6B8E78]">gym123</code><br/>
+          Default passcode: <code className="text-[#6B8E78]">gym123</code><br />
           (Changeable anytime in Settings)
         </p>
       </div>

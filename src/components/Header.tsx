@@ -51,8 +51,8 @@ export const Header: React.FC<HeaderProps> = ({ onOpenSettings }) => {
             <DumbbellLogo className="h-6 w-6" />
           </div>
           <div>
-            <h1 className="font-serif text-lg font-bold tracking-wider text-[#F4F1EA]">IRON PULSE</h1>
-            <p className="text-[10px] uppercase tracking-widest font-semibold text-[#6B8E78]">Personal Tracker</p>
+            <h1 className="font-serif text-lg font-bold tracking-wider text-[#F4F1EA]">Doom Tracker</h1>
+            {/* <p className="text-[10px] uppercase tracking-widest font-semibold text-[#6B8E78]">Personal Tracker</p> */}
           </div>
         </div>
 

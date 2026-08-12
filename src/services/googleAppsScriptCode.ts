@@ -29,7 +29,7 @@ function handleRequest(e) {
 
     if (action === 'ping') {
       output.success = true;
-      output.data = { status: 'online', app: 'Iron Pulse Gym Tracker' };
+      output.data = { status: 'online', app: 'Doom Tracker' };
     } else if (action === 'get_all') {
       output.data = {
         logs: readLogsSheet(ss),
