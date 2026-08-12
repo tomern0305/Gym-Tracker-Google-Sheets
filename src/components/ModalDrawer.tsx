@@ -55,7 +55,7 @@ export const ModalDrawer: React.FC<ModalDrawerProps> = ({
         </div>
 
         {/* Scrollable Body Content */}
-        <div className="mt-4 flex-1 overflow-y-auto pr-1 pb-2 scrollbar-none">
+        <div className="mt-4 flex-1 min-h-0 overflow-y-auto pr-1 pb-2 scrollbar-none">
           {children}
         </div>
       </div>

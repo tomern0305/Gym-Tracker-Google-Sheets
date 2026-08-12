@@ -259,7 +259,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onStartWorkout, on
             <p className="text-xs text-[#9E9B93] text-center mb-5">Pick a preset routine or enter a custom title</p>
 
             {/* Template options */}
-            <div className="space-y-2.5 max-h-56 overflow-y-auto mb-5 pr-1">
+            <div className="space-y-2.5 flex-1 min-h-0 overflow-y-auto mb-5 pr-1">
               {templates.map((tmpl) => (
                 <button
                   key={tmpl.id}
