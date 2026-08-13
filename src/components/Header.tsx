@@ -43,15 +43,15 @@ export const Header: React.FC<HeaderProps> = ({ onOpenSettings }) => {
   };
 
   return (
-    <header className="sticky top-0 z-30 w-full glass-card border-b border-[#F4F1EA]/10 px-4 py-3.5 backdrop-blur-md">
-      <div className="mx-auto flex max-w-md items-center justify-between">
+    <header className="fixed inset-x-0 top-0 z-[60] w-full glass-card border-b border-[#F4F1EA]/10 px-4 pt-[var(--safe-top)] backdrop-blur-md">
+      <div className="mx-auto flex h-[var(--header-h)] max-w-md items-center justify-between">
         {/* Brand Logo & Title */}
         <div className="flex items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#171D22] border border-[#F4F1EA]/15 shadow-sm">
             <DumbbellLogo className="h-6 w-6" />
           </div>
           <div>
-            <h1 className="font-serif text-lg font-bold tracking-wider text-[#F4F1EA]">Doom Tracker</h1>
+            <h1 className="font-serif text-lg font-bold tracking-wider text-[#F4F1EA]">Sessions</h1>
             {/* <p className="text-[10px] uppercase tracking-widest font-semibold text-[#6B8E78]">Personal Tracker</p> */}
           </div>
         </div>

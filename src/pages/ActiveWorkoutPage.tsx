@@ -26,7 +26,8 @@ import {
   getExercises,
   getPreviousBenchmark,
   getLastSessionExerciseData,
-  saveWorkoutLog
+  saveWorkoutLog,
+  todayKey
 } from '../services/storage';
 import { ModalDrawer } from '../components/ModalDrawer';
 
@@ -207,7 +208,7 @@ export const ActiveWorkoutPage: React.FC<ActiveWorkoutPageProps> = ({
 
     const newLog: WorkoutSessionLog = {
       id: 'log-' + Date.now(),
-      date: new Date().toISOString().split('T')[0],
+      date: todayKey(),
       workoutType: workoutType,
       exercises: exercises,
       timestamp: Date.now()
@@ -238,7 +239,7 @@ export const ActiveWorkoutPage: React.FC<ActiveWorkoutPageProps> = ({
   };
 
   return (
-    <div className="space-y-5 pb-24 animate-fade-in">
+    <div className="space-y-5 animate-fade-in">
       {/* Header Bar */}
       <div className="flex items-center justify-between glass-card p-4 rounded-2xl border border-[#F4F1EA]/10">
         <button

@@ -76,7 +76,7 @@ export const TemplatesPage: React.FC = () => {
   };
 
   return (
-    <div className="space-y-5 pb-24 animate-fade-in">
+    <div className="space-y-5 animate-fade-in">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>

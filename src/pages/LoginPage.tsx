@@ -28,7 +28,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
         <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-3xl bg-[#171D22] border border-[#F4F1EA]/15 shadow-2xl">
           <DumbbellLogo className="h-12 w-12" />
         </div>
-        <h1 className="font-serif text-3xl font-bold tracking-wider text-[#F4F1EA]">Doom Tracker</h1>
+        <h1 className="font-serif text-3xl font-bold tracking-wider text-[#F4F1EA]">Sessions</h1>
         <p className="mt-1.5 text-xs uppercase tracking-widest font-semibold text-[#6B8E78]">Personal Performance Vault</p>
       </div>
 

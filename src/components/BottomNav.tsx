@@ -17,8 +17,8 @@ export const BottomNav: React.FC<BottomNavProps> = ({ activeTab, onTabChange }) 
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-30 w-full glass-card border-t border-[#F4F1EA]/10 pb-safe pt-2 backdrop-blur-xl">
-      <div className="mx-auto flex max-w-md items-center justify-around px-2 pb-2">
+    <nav className="fixed inset-x-0 bottom-0 z-40 w-full glass-card border-t border-[#F4F1EA]/10 pb-[var(--safe-bottom)] backdrop-blur-xl">
+      <div className="mx-auto flex h-[var(--nav-h)] max-w-md items-center justify-around px-2">
         {tabs.map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { 
   ChevronLeft, 
   ChevronRight, 
@@ -12,7 +13,8 @@ import {
   Trash2
 } from 'lucide-react';
 import type { WorkoutSessionLog, WorkoutTemplate } from '../types';
-import { getWorkoutLogs, getTemplates, deleteWorkoutLog } from '../services/storage';
+import { getWorkoutLogs, getTemplates, deleteWorkoutLog, todayKey } from '../services/storage';
+import { useBodyScrollLock } from '../hooks/useBodyScrollLock';
 
 interface DashboardPageProps {
   onStartWorkout: (workoutType: string, template?: WorkoutTemplate) => void;
@@ -27,6 +29,8 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onStartWorkout, on
 
   const [logs, setLogs] = useState<WorkoutSessionLog[]>(getWorkoutLogs());
   const [templates, setTemplates] = useState<WorkoutTemplate[]>(getTemplates());
+
+  useBodyScrollLock(Boolean(selectedDayLog) || showStartSheet);
 
   React.useEffect(() => {
     const handleUpdate = () => {
@@ -83,12 +87,12 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onStartWorkout, on
     }
   };
 
-  const todayStr = new Date().toISOString().split('T')[0];
+  const todayStr = todayKey();
   const todayLog = logsByDate[todayStr];
   const hasLoggedToday = Boolean(todayLog);
 
   return (
-    <div className="space-y-6 pb-24 animate-fade-in">
+    <div className="space-y-6 animate-fade-in">
       {/* Hero "Start Workout" Banner */}
       <div className="glass-card-elevated p-5 rounded-3xl border border-[#F4F1EA]/15 shadow-xl relative overflow-hidden">
         <div className="absolute right-0 top-0 w-32 h-32 bg-[#6B8E78]/10 rounded-full blur-2xl pointer-events-none" />
@@ -219,12 +223,12 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onStartWorkout, on
       </div>
 
       {/* Modal: View Selected Day Log */}
-      {selectedDayLog && (
-        <div className="fixed inset-0 z-50 flex flex-col justify-end sm:justify-center p-0 sm:p-4 bg-black/80 backdrop-blur-md animate-fade-in">
+      {selectedDayLog && createPortal(
+        <div className="fixed inset-0 z-50 flex flex-col items-center justify-end bg-black/80 pt-[var(--header-total)] backdrop-blur-md sm:justify-center sm:px-4 sm:pb-4 sm:pt-[calc(var(--header-total)+1rem)] animate-fade-in">
           <div className="absolute inset-0" onClick={() => setSelectedDayLog(null)} />
-          <div className="relative z-10 w-full max-w-md mx-auto max-h-[85vh] flex flex-col rounded-t-3xl sm:rounded-3xl border border-[#F4F1EA]/15 bg-[#171D22] p-5 shadow-2xl animate-slide-up overflow-hidden">
-            <div className="mx-auto mb-4 h-1.5 w-12 rounded-full bg-[#F4F1EA]/20" />
-            <div className="flex items-center justify-between pb-3 border-b border-[#F4F1EA]/10">
+          <div className="relative z-10 mx-auto flex max-h-full min-h-0 w-full max-w-md flex-col overflow-hidden rounded-t-3xl border border-[#F4F1EA]/15 bg-[#171D22] p-5 pb-[calc(1.25rem+var(--safe-bottom))] shadow-2xl sm:rounded-3xl sm:pb-5 animate-slide-up">
+            <div className="mx-auto mb-4 h-1.5 w-12 rounded-full bg-[#F4F1EA]/20 shrink-0" />
+            <div className="flex items-center justify-between pb-3 border-b border-[#F4F1EA]/10 shrink-0">
               <div>
                 <span className="text-xs font-semibold text-[#6B8E78] uppercase tracking-wider">{selectedDayLog.date}</span>
                 <h3 className="font-serif text-2xl font-medium text-[#F4F1EA] mt-0.5">{selectedDayLog.workoutType}</h3>
@@ -238,7 +242,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onStartWorkout, on
               </button>
             </div>
 
-            <div className="mt-4 max-h-60 overflow-y-auto space-y-3 pr-1">
+            <div className="mt-4 flex-1 min-h-0 overflow-y-auto overscroll-contain space-y-3 pr-1">
               {selectedDayLog.exercises.map((ex, idx) => (
                 <div key={idx} className="glass-card p-3 rounded-xl border border-[#F4F1EA]/10">
                   <div className="flex justify-between items-center mb-1.5">
@@ -264,25 +268,26 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onStartWorkout, on
 
             <button
               onClick={() => setSelectedDayLog(null)}
-              className="mt-5 w-full rounded-xl bg-[#1F272E] py-3 text-sm font-medium text-[#F4F1EA] hover:bg-[#6B8E78]/20 transition touch-shrink"
+              className="mt-5 w-full shrink-0 rounded-xl bg-[#1F272E] py-3 text-sm font-medium text-[#F4F1EA] hover:bg-[#6B8E78]/20 transition touch-shrink"
             >
               Close
             </button>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* Bottom Sheet: Select Workout Type */}
-      {showStartSheet && (
-        <div className="fixed inset-0 z-50 flex flex-col justify-end sm:justify-center p-0 sm:p-4 bg-black/80 backdrop-blur-md animate-fade-in">
+      {showStartSheet && createPortal(
+        <div className="fixed inset-0 z-50 flex flex-col items-center justify-end bg-black/80 pt-[var(--header-total)] backdrop-blur-md sm:justify-center sm:px-4 sm:pb-4 sm:pt-[calc(var(--header-total)+1rem)] animate-fade-in">
           <div className="absolute inset-0" onClick={() => setShowStartSheet(false)} />
-          <div className="relative z-10 w-full max-w-md mx-auto max-h-[85vh] flex flex-col rounded-t-3xl sm:rounded-3xl border border-[#F4F1EA]/15 bg-[#171D22] p-5 shadow-2xl animate-slide-up overflow-hidden">
-            <div className="mx-auto mb-4 h-1.5 w-12 rounded-full bg-[#F4F1EA]/20" />
-            <h3 className="font-serif text-2xl font-medium text-[#F4F1EA] text-center mb-1">Select Workout Type</h3>
-            <p className="text-xs text-[#9E9B93] text-center mb-5">Pick a preset routine or enter a custom title</p>
+          <div className="relative z-10 mx-auto flex max-h-full min-h-0 w-full max-w-md flex-col overflow-hidden rounded-t-3xl border border-[#F4F1EA]/15 bg-[#171D22] p-5 pb-[calc(1.25rem+var(--safe-bottom))] shadow-2xl sm:rounded-3xl sm:pb-5 animate-slide-up">
+            <div className="mx-auto mb-4 h-1.5 w-12 rounded-full bg-[#F4F1EA]/20 shrink-0" />
+            <h3 className="font-serif text-2xl font-medium text-[#F4F1EA] text-center mb-1 shrink-0">Select Workout Type</h3>
+            <p className="text-xs text-[#9E9B93] text-center mb-5 shrink-0">Pick a preset routine or enter a custom title</p>
 
             {/* Template options */}
-            <div className="space-y-2.5 flex-1 min-h-0 overflow-y-auto mb-5 pr-1">
+            <div className="space-y-2.5 flex-1 min-h-0 overflow-y-auto overscroll-contain mb-5 pr-1">
               {templates.map((tmpl) => (
                 <button
                   key={tmpl.id}
@@ -301,7 +306,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onStartWorkout, on
             </div>
 
             {/* Custom workout input */}
-            <form onSubmit={handleStartCustom} className="pt-3 border-t border-[#F4F1EA]/10">
+            <form onSubmit={handleStartCustom} className="pt-3 border-t border-[#F4F1EA]/10 shrink-0">
               <label className="block text-xs font-medium text-[#9E9B93] mb-2 uppercase tracking-wider">
                 Or Custom Workout Name
               </label>
@@ -323,7 +328,8 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onStartWorkout, on
               </div>
             </form>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );

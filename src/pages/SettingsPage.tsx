@@ -88,7 +88,7 @@ export const SettingsPage: React.FC<{ onClose: () => void }> = ({ onClose }) => 
   };
 
   return (
-    <div className="space-y-6 pb-24 animate-fade-in text-[#F4F1EA]">
+    <div className="space-y-6 animate-fade-in text-[#F4F1EA]">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>

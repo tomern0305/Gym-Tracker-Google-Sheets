@@ -29,7 +29,7 @@ function handleRequest(e) {
 
     if (action === 'ping') {
       output.success = true;
-      output.data = { status: 'online', app: 'Doom Tracker' };
+      output.data = { status: 'online', app: 'Sessions' };
     } else if (action === 'get_all') {
       output.data = {
         logs: readLogsSheet(ss),
@@ -75,6 +75,15 @@ function ensureTabsExist(ss) {
       }
     }
   }
+}
+
+// Sheets turns the date column into a real Date, and String(date) is never an
+// ISO string, so the day key has to be formatted rather than sliced.
+function formatDateKey(value) {
+  if (Object.prototype.toString.call(value) === '[object Date]') {
+    return Utilities.formatDate(value, Session.getScriptTimeZone(), 'yyyy-MM-dd');
+  }
+  return String(value).split('T')[0];
 }
 
 function readLogsSheet(ss) {
@@ -140,7 +149,7 @@ function readLogsSheet(ss) {
     }
     result.push({
       id: item.id,
-      date: String(item.date).split('T')[0],
+      date: formatDateKey(item.date),
       workoutType: item.workoutType,
       exercises: exList,
       timestamp: item.timestamp

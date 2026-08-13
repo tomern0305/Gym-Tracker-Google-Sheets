@@ -45,15 +45,23 @@ export function App() {
     }
   };
 
+  const showBottomNav = !activeWorkoutConfig && !showSettings;
+
   return (
-    <div className="min-h-screen bg-[#0F1317] text-[#F4F1EA] flex flex-col font-sans selection:bg-[#6B8E78] selection:text-[#0F1317]">
+    <div className="min-h-[100dvh] bg-[#0F1317] text-[#F4F1EA] flex flex-col font-sans selection:bg-[#6B8E78] selection:text-[#0F1317]">
       {/* Header */}
       <Header
         onOpenSettings={() => setShowSettings(true)}
       />
 
-      {/* Main Page Area */}
-      <main className="flex-1 w-full max-w-md mx-auto px-4 pt-5 pb-20">
+      {/* Main Page Area — padded clear of the fixed header and nav bars */}
+      <main
+        className={`flex-1 w-full max-w-md mx-auto px-4 pt-[calc(var(--header-total)+1.25rem)] ${
+          showBottomNav
+            ? 'pb-[calc(var(--nav-total)+1.5rem)]'
+            : 'pb-[calc(var(--safe-bottom)+1.5rem)]'
+        }`}
+      >
         {showSettings ? (
           <SettingsPage onClose={() => setShowSettings(false)} />
         ) : activeWorkoutConfig ? (
@@ -78,7 +86,7 @@ export function App() {
       </main>
 
       {/* Bottom Navigation */}
-      {!activeWorkoutConfig && !showSettings && (
+      {showBottomNav && (
         <BottomNav
           activeTab={activeTab}
           onTabChange={setActiveTab}

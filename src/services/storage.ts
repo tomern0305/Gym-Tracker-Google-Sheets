@@ -71,6 +71,50 @@ export function saveSettings(settings: Partial<AppSettings>): AppSettings {
   return updated;
 }
 
+// --- Calendar Day Keys ---
+// Logs are keyed by local calendar day ('YYYY-MM-DD'). The Sheets 'date' column
+// is stored as a real Date, so it comes back as a full timestamp string and has
+// to be folded back to a day key or none of the calendar lookups match.
+const DATE_KEY_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
+
+export function toDateKey(value: Date | string | number): string {
+  if (typeof value === 'string' && DATE_KEY_PATTERN.test(value.trim())) {
+    return value.trim();
+  }
+
+  const parsed = value instanceof Date ? value : new Date(value);
+  if (isNaN(parsed.getTime())) return typeof value === 'string' ? value : '';
+
+  // Exactly midnight UTC means a date-only value was serialized as UTC; reading
+  // it in local time would land on the previous day west of Greenwich.
+  const isUtcMidnight =
+    parsed.getUTCHours() === 0 &&
+    parsed.getUTCMinutes() === 0 &&
+    parsed.getUTCSeconds() === 0 &&
+    parsed.getUTCMilliseconds() === 0;
+
+  const year = isUtcMidnight ? parsed.getUTCFullYear() : parsed.getFullYear();
+  const month = (isUtcMidnight ? parsed.getUTCMonth() : parsed.getMonth()) + 1;
+  const day = isUtcMidnight ? parsed.getUTCDate() : parsed.getDate();
+
+  return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+}
+
+export function todayKey(): string {
+  return toDateKey(new Date());
+}
+
+/**
+ * Older backends emitted the date column as String(dateCell).split('T')[0],
+ * which truncates at the first 'T' — an empty string for Tuesday and Thursday,
+ * a mangled stub for every other day. Fall back to when the row was created.
+ */
+function resolveLogDate(log: WorkoutSessionLog): string {
+  const fromDate = toDateKey(log.date);
+  if (DATE_KEY_PATTERN.test(fromDate)) return fromDate;
+  return log.timestamp ? toDateKey(log.timestamp) : fromDate;
+}
+
 // --- Local & Remote Data Services ---
 const DEMO_EXERCISE_IDS = new Set(['ex-1','ex-2','ex-3','ex-4','ex-5','ex-6','ex-7','ex-8','ex-9','ex-10','ex-11','ex-12','ex-13','ex-14','ex-15','ex-16']);
 const DEMO_TEMPLATE_IDS = new Set(['tmpl-1','tmpl-2','tmpl-3','tmpl-4']);
@@ -118,7 +162,14 @@ export function getWorkoutLogs(): WorkoutSessionLog[] {
     try {
       const parsed = JSON.parse(stored);
       if (Array.isArray(parsed)) {
-        return parsed.filter(l => l && l.id && !DEMO_LOG_IDS.has(l.id));
+        // Newest first: 'last workout' and the benchmark lookups walk this in
+        // order, and a fetch from Sheets arrives in whatever order the rows sit.
+        return parsed
+          .filter(l => l && l.id && !DEMO_LOG_IDS.has(l.id))
+          .map(l => ({ ...l, date: resolveLogDate(l) }))
+          .sort((a, b) =>
+            b.date.localeCompare(a.date) || (b.timestamp || 0) - (a.timestamp || 0)
+          );
       }
     } catch (e) {}
   }
@@ -265,6 +316,22 @@ async function syncExercisesToGoogleSheets(exercises: Exercise[]): Promise<void>
   } catch (e) {}
 }
 
+/**
+ * The sheet is the source of truth for anything it knows about, but a session
+ * saved while the sync was failing exists only here — replacing the array
+ * outright would erase it from the calendar on the next launch.
+ */
+function mergeLogs(remote: WorkoutSessionLog[], local: WorkoutSessionLog[]): WorkoutSessionLog[] {
+  const byId = new Map<string, WorkoutSessionLog>();
+  for (const log of local) {
+    if (log && log.id) byId.set(log.id, log);
+  }
+  for (const log of remote) {
+    if (log && log.id) byId.set(log.id, log);
+  }
+  return Array.from(byId.values());
+}
+
 export async function fetchAllFromGoogleSheets(): Promise<boolean> {
   const settings = getSettings();
   if (!settings.googleWebAppUrl) return false;
@@ -274,7 +341,7 @@ export async function fetchAllFromGoogleSheets(): Promise<boolean> {
     const json = await response.json();
     if (json.success && json.data) {
       if (json.data.logs && Array.isArray(json.data.logs)) {
-        localStorage.setItem(KEYS.LOGS, JSON.stringify(json.data.logs));
+        localStorage.setItem(KEYS.LOGS, JSON.stringify(mergeLogs(json.data.logs, getWorkoutLogs())));
       }
       if (json.data.templates && Array.isArray(json.data.templates)) {
         localStorage.setItem(KEYS.TEMPLATES, JSON.stringify(json.data.templates));

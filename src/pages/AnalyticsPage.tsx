@@ -33,38 +33,39 @@ interface SessionPoint {
 function formatGraphDate(dateStr: string): string {
   if (!dateStr) return '';
   const str = String(dateStr).trim();
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-  // Try Date object parsing first (handles ISO, GMT, UTC, standard date strings)
+  // YYYY-MM-DD first: logs are stored as day keys, and parsing one as a Date
+  // reads it as UTC midnight, which renders the previous day west of Greenwich.
+  const ymd = str.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (ymd) {
+    const idx = parseInt(ymd[2], 10) - 1;
+    return `${months[idx] || ''} ${parseInt(ymd[3], 10)}`;
+  }
+
+  // Then Date parsing (handles ISO, GMT, UTC, standard date strings)
   const d = new Date(str);
   if (!isNaN(d.getTime())) {
-    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     return `${months[d.getMonth()]} ${d.getDate()}`;
   }
 
-  // Try matching month names in raw strings (e.g. "Wed Aug 12 2026 ...")
+  // Finally, month names in raw strings (e.g. "Wed Aug 12 2026 ...")
   const monthMatch = str.match(/(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\w*\s+(\d{1,2})/i);
   if (monthMatch) {
     return `${monthMatch[1]} ${monthMatch[2]}`;
-  }
-
-  // YYYY-MM-DD pattern
-  const ymd = str.match(/^(\d{4})-(\d{2})-(\d{2})/);
-  if (ymd) {
-    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    const idx = parseInt(ymd[2], 10) - 1;
-    return `${months[idx] || ''} ${parseInt(ymd[3], 10)}`;
   }
 
   return str.slice(0, 6);
 }
 
 export const AnalyticsPage: React.FC = () => {
-  const allExercises = getExercises();
+  const [allExercises, setAllExercises] = useState(getExercises());
   const [logs, setLogs] = useState(getWorkoutLogs());
 
   // Listen to realtime storage updates
   useEffect(() => {
     const handleUpdate = () => {
+      setAllExercises(getExercises());
       setLogs(getWorkoutLogs());
     };
     window.addEventListener('aura_data_updated', handleUpdate);
@@ -77,6 +78,9 @@ export const AnalyticsPage: React.FC = () => {
   const [metricMode, setMetricMode] = useState<'sets' | 'max' | 'volume'>('sets');
   const [activePoint, setActivePoint] = useState<{ session: SessionPoint; setIdx?: number } | null>(null);
 
+  /* The library can arrive after mount (Sheets fetch, or movements added on the
+     Library tab), so the stored id may not match anything yet. Fall back to the
+     first movement and drive the <select> from this, or it renders blank. */
   const selectedExercise = allExercises.find(e => e.id === selectedExerciseId) || allExercises[0];
 
   // Build chronological session points for the selected exercise
@@ -172,7 +176,7 @@ export const AnalyticsPage: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6 pb-24 animate-fade-in text-[#F4F1EA]">
+    <div className="space-y-6 animate-fade-in text-[#F4F1EA]">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -193,24 +197,30 @@ export const AnalyticsPage: React.FC = () => {
         <label className="block text-xs font-semibold uppercase tracking-wider text-[#9E9B93]">
           Select Exercise to Track
         </label>
-        
-        <div className="relative">
-          <select
-            value={selectedExerciseId}
-            onChange={(e) => {
-              setSelectedExerciseId(e.target.value);
-              setActivePoint(null);
-            }}
-            className="w-full appearance-none rounded-2xl bg-[#0F1317] border border-[#F4F1EA]/20 px-4 py-3.5 pr-10 text-sm font-medium text-[#F4F1EA] focus:outline-none focus:border-[#6B8E78] transition"
-          >
-            {allExercises.map(ex => (
-              <option key={ex.id} value={ex.id} className="bg-[#171D22] text-[#F4F1EA]">
-                {ex.name} ({ex.category})
-              </option>
-            ))}
-          </select>
-          <ChevronDown className="absolute right-3.5 top-4 h-5 w-5 text-[#6B8E78] pointer-events-none" />
-        </div>
+
+        {allExercises.length === 0 ? (
+          <p className="text-xs text-[#9E9B93] italic p-4 rounded-2xl bg-[#0F1317] border border-[#F4F1EA]/10 text-center leading-relaxed">
+            No movements in library yet. Add movements from the Library tab first!
+          </p>
+        ) : (
+          <div className="relative">
+            <select
+              value={selectedExercise?.id || ''}
+              onChange={(e) => {
+                setSelectedExerciseId(e.target.value);
+                setActivePoint(null);
+              }}
+              className="w-full appearance-none rounded-2xl bg-[#0F1317] border border-[#F4F1EA]/20 px-4 py-3.5 pr-10 text-sm font-medium text-[#F4F1EA] focus:outline-none focus:border-[#6B8E78] transition"
+            >
+              {allExercises.map(ex => (
+                <option key={ex.id} value={ex.id} className="bg-[#171D22] text-[#F4F1EA]">
+                  {ex.name} ({ex.category})
+                </option>
+              ))}
+            </select>
+            <ChevronDown className="absolute right-3.5 top-4 h-5 w-5 text-[#6B8E78] pointer-events-none" />
+          </div>
+        )}
       </div>
 
       {/* Metric Mode Selector Tabs */}
