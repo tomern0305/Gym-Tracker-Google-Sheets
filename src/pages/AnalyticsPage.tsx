@@ -10,14 +10,15 @@ import {
 import { getExercises, getWorkoutLogs } from '../services/storage';
 import type { StrengthSet } from '../types';
 
-// Color palette for set lines in quiet luxury palette
+// Categorical set colours: muted, well separated in hue so sets stay tellable
+// apart, and each clears 3:1 against the parchment card behind the chart.
 const SET_COLORS = [
-  '#6B8E78', // Set 1: Sage Green
-  '#5C809B', // Set 2: Slate Blue
-  '#D4A373', // Set 3: Warm Amber
-  '#E07A5F', // Set 4: Terracotta
-  '#9A8C98', // Set 5: Muted Violet
-  '#81D4FA', // Set 6+: Cyan Accent
+  '#C2410C', // Set 1: Accent orange
+  '#0F766E', // Set 2: Teal
+  '#4338CA', // Set 3: Indigo
+  '#B91C1C', // Set 4: Red
+  '#166534', // Set 5: Green
+  '#52525B', // Set 6+: Zinc
 ];
 
 interface SessionPoint {
@@ -176,30 +177,30 @@ export const AnalyticsPage: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6 animate-fade-in text-[#F4F1EA]">
+    <div className="space-y-6 animate-fade-in text-ink">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <div className="flex items-center gap-2 text-xs font-semibold uppercase text-[#6B8E78] tracking-wider mb-1">
+          <div className="flex items-center gap-2 text-xs font-semibold uppercase text-accent tracking-wider mb-1">
             <TrendingUp className="h-3.5 w-3.5" />
             <span>Progress & Analytics</span>
           </div>
-          <h2 className="font-serif text-2xl font-medium text-[#F4F1EA]">Movement Progress</h2>
+          <h2 className="font-display text-2xl font-bold tracking-[-0.03em] text-ink">Movement Progress</h2>
         </div>
 
-        <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#6B8E78]/15 border border-[#6B8E78]/30">
-          <ChartIcon className="h-5 w-5 text-[#6B8E78]" />
+        <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-accent/15 border border-accent/30">
+          <ChartIcon className="h-5 w-5 text-accent" />
         </div>
       </div>
 
       {/* Exercise Picker Dropdown */}
-      <div className="glass-card-elevated p-4 rounded-3xl border border-[#F4F1EA]/15 shadow-xl space-y-3">
-        <label className="block text-xs font-semibold uppercase tracking-wider text-[#9E9B93]">
+      <div className="card-raised p-4 rounded-3xl border border-line shadow-sm space-y-3">
+        <label className="block text-xs font-semibold uppercase tracking-wider text-ink-soft">
           Select Exercise to Track
         </label>
 
         {allExercises.length === 0 ? (
-          <p className="text-xs text-[#9E9B93] italic p-4 rounded-2xl bg-[#0F1317] border border-[#F4F1EA]/10 text-center leading-relaxed">
+          <p className="text-xs text-ink-soft italic p-4 rounded-2xl bg-raised border border-line text-center leading-relaxed">
             No movements in library yet. Add movements from the Library tab first!
           </p>
         ) : (
@@ -210,27 +211,27 @@ export const AnalyticsPage: React.FC = () => {
                 setSelectedExerciseId(e.target.value);
                 setActivePoint(null);
               }}
-              className="w-full appearance-none rounded-2xl bg-[#0F1317] border border-[#F4F1EA]/20 px-4 py-3.5 pr-10 text-sm font-medium text-[#F4F1EA] focus:outline-none focus:border-[#6B8E78] transition"
+              className="w-full appearance-none rounded-2xl bg-raised border border-line px-4 py-3.5 pr-10 text-sm font-medium text-ink focus:outline-none focus:border-accent transition"
             >
               {allExercises.map(ex => (
-                <option key={ex.id} value={ex.id} className="bg-[#171D22] text-[#F4F1EA]">
+                <option key={ex.id} value={ex.id} className="bg-surface text-ink">
                   {ex.name} ({ex.category})
                 </option>
               ))}
             </select>
-            <ChevronDown className="absolute right-3.5 top-4 h-5 w-5 text-[#6B8E78] pointer-events-none" />
+            <ChevronDown className="absolute right-3.5 top-4 h-5 w-5 text-accent pointer-events-none" />
           </div>
         )}
       </div>
 
       {/* Metric Mode Selector Tabs */}
-      <div className="flex rounded-2xl bg-[#171D22] p-1 border border-[#F4F1EA]/10">
+      <div className="flex rounded-2xl bg-surface p-1 border border-line">
         <button
           onClick={() => { setMetricMode('sets'); setActivePoint(null); }}
           className={`flex-1 py-2.5 rounded-xl text-xs font-semibold transition ${
             metricMode === 'sets'
-              ? 'bg-[#6B8E78] text-[#0F1317] shadow-md'
-              : 'text-[#9E9B93] hover:text-[#F4F1EA]'
+              ? 'bg-accent text-on-accent shadow-md'
+              : 'text-ink-soft hover:text-ink'
           }`}
         >
           Set Lines (kg)
@@ -239,8 +240,8 @@ export const AnalyticsPage: React.FC = () => {
           onClick={() => { setMetricMode('max'); setActivePoint(null); }}
           className={`flex-1 py-2.5 rounded-xl text-xs font-semibold transition ${
             metricMode === 'max'
-              ? 'bg-[#6B8E78] text-[#0F1317] shadow-md'
-              : 'text-[#9E9B93] hover:text-[#F4F1EA]'
+              ? 'bg-accent text-on-accent shadow-md'
+              : 'text-ink-soft hover:text-ink'
           }`}
         >
           Max Weight
@@ -249,8 +250,8 @@ export const AnalyticsPage: React.FC = () => {
           onClick={() => { setMetricMode('volume'); setActivePoint(null); }}
           className={`flex-1 py-2.5 rounded-xl text-xs font-semibold transition ${
             metricMode === 'volume'
-              ? 'bg-[#6B8E78] text-[#0F1317] shadow-md'
-              : 'text-[#9E9B93] hover:text-[#F4F1EA]'
+              ? 'bg-accent text-on-accent shadow-md'
+              : 'text-ink-soft hover:text-ink'
           }`}
         >
           Total Volume
@@ -258,13 +259,13 @@ export const AnalyticsPage: React.FC = () => {
       </div>
 
       {/* Interactive Line Graph Card */}
-      <div className="glass-card-elevated p-4 sm:p-5 rounded-3xl border border-[#F4F1EA]/15 shadow-xl relative">
+      <div className="card-raised p-4 sm:p-5 rounded-3xl border border-line shadow-sm relative">
         <div className="flex items-center justify-between mb-3">
           <div>
-            <h3 className="font-serif text-lg font-medium text-[#F4F1EA]">
+            <h3 className="font-display text-lg font-semibold tracking-[-0.01em] text-ink">
               {selectedExercise?.name}
             </h3>
-            <p className="text-xs text-[#9E9B93]">
+            <p className="text-xs text-ink-soft">
               {historyData.length} Logged Sessions
             </p>
           </div>
@@ -278,7 +279,7 @@ export const AnalyticsPage: React.FC = () => {
                     className="h-2 w-2 rounded-full shrink-0"
                     style={{ backgroundColor: SET_COLORS[idx % SET_COLORS.length] }}
                   />
-                  <span className="text-[10px] text-[#9E9B93]">S{idx + 1}</span>
+                  <span className="text-[10px] text-ink-soft">S{idx + 1}</span>
                 </div>
               ))}
             </div>
@@ -287,11 +288,11 @@ export const AnalyticsPage: React.FC = () => {
 
         {/* Graph Display Area */}
         {historyData.length === 0 ? (
-          <div className="my-10 flex flex-col items-center justify-center text-center p-6 rounded-2xl bg-[#0F1317]/50 border border-[#F4F1EA]/10">
-            <Dumbbell className="h-10 w-10 text-[#9E9B93]/40 mb-3" />
-            <p className="text-sm font-medium text-[#F4F1EA]">No Session Data Logged Yet</p>
-            <p className="text-xs text-[#9E9B93] mt-1 max-w-xs leading-relaxed">
-              Complete your first workout containing <span className="text-[#6B8E78]">{selectedExercise?.name}</span> to generate set progress curves!
+          <div className="my-10 flex flex-col items-center justify-center text-center p-6 rounded-2xl bg-raised/50 border border-line">
+            <Dumbbell className="h-10 w-10 text-ink-faint mb-3" />
+            <p className="text-sm font-medium text-ink">No Session Data Logged Yet</p>
+            <p className="text-xs text-ink-soft mt-1 max-w-xs leading-relaxed">
+              Complete your first workout containing <span className="text-accent">{selectedExercise?.name}</span> to generate set progress curves!
             </p>
           </div>
         ) : (
@@ -312,17 +313,17 @@ export const AnalyticsPage: React.FC = () => {
                       y1={y}
                       x2={chartWidth - paddingX}
                       y2={y}
-                      stroke="#F4F1EA"
-                      strokeOpacity="0.08"
+                      stroke="#D4D4D8"
+                      strokeOpacity="0.7"
                       strokeDasharray="3 3"
                     />
                     <text
                       x={paddingX - 6}
                       y={y + 3}
-                      fill="#9E9B93"
+                      fill="#52525B"
                       fontSize="9"
                       textAnchor="end"
-                      fontFamily="monospace"
+                      fontFamily="'JetBrains Mono', monospace"
                     >
                       {val}
                     </text>
@@ -377,7 +378,7 @@ export const AnalyticsPage: React.FC = () => {
                             cy={cy}
                             r={isSelected ? 6 : 4}
                             fill={strokeColor}
-                            stroke="#0F1317"
+                            stroke="#FFFFFF"
                             strokeWidth={isSelected ? 2 : 1}
                             className="cursor-pointer transition-all hover:scale-125"
                             onClick={() => setActivePoint({ session, setIdx })}
@@ -397,7 +398,7 @@ export const AnalyticsPage: React.FC = () => {
                     <g>
                       <polyline
                         fill="none"
-                        stroke="#6B8E78"
+                        stroke="#C2410C"
                         strokeWidth="3"
                         strokeLinecap="round"
                         strokeLinejoin="round"
@@ -413,8 +414,8 @@ export const AnalyticsPage: React.FC = () => {
                             cx={cx}
                             cy={cy}
                             r={isSelected ? 6 : 4.5}
-                            fill="#6B8E78"
-                            stroke="#0F1317"
+                            fill="#C2410C"
+                            stroke="#FFFFFF"
                             strokeWidth="2"
                             className="cursor-pointer transition-all hover:scale-125"
                             onClick={() => setActivePoint({ session })}
@@ -436,10 +437,10 @@ export const AnalyticsPage: React.FC = () => {
                     key={sIdx}
                     x={x}
                     y={chartHeight - 6}
-                    fill="#9E9B93"
+                    fill="#52525B"
                     fontSize="9"
                     textAnchor="middle"
-                    fontFamily="sans-serif"
+                    fontFamily="Inter, sans-serif"
                   >
                     {session.formattedDate}
                   </text>
@@ -449,18 +450,18 @@ export const AnalyticsPage: React.FC = () => {
 
             {/* Selected Data Point Detail Box */}
             {activePoint && (
-              <div className="mt-4 p-3 rounded-2xl bg-[#0F1317] border border-[#6B8E78]/40 shadow-xl animate-fade-in flex items-center justify-between">
+              <div className="mt-4 p-3 rounded-2xl bg-raised border border-accent/40 shadow-sm animate-fade-in flex items-center justify-between">
                 <div>
-                  <div className="flex items-center gap-2 text-xs font-semibold text-[#6B8E78]">
+                  <div className="flex items-center gap-2 text-xs font-semibold text-accent">
                     <CalendarIcon className="h-3.5 w-3.5" />
                     <span>{formatGraphDate(activePoint.session.date)} • {activePoint.session.workoutType}</span>
                   </div>
                   {activePoint.setIdx !== undefined && activePoint.session.sets[activePoint.setIdx] ? (
-                    <p className="text-sm font-mono font-bold text-[#F4F1EA] mt-1">
+                    <p className="text-sm font-mono font-bold text-ink mt-1">
                       Set #{activePoint.setIdx + 1}: {activePoint.session.sets[activePoint.setIdx].weightKg}kg × {activePoint.session.sets[activePoint.setIdx].reps} reps
                     </p>
                   ) : (
-                    <p className="text-sm font-mono font-bold text-[#F4F1EA] mt-1">
+                    <p className="text-sm font-mono font-bold text-ink mt-1">
                       Max: {activePoint.session.maxWeight}kg • Vol: {activePoint.session.totalVolume}kg
                     </p>
                   )}
@@ -468,7 +469,7 @@ export const AnalyticsPage: React.FC = () => {
 
                 <button
                   onClick={() => setActivePoint(null)}
-                  className="text-xs text-[#9E9B93] hover:text-[#F4F1EA] px-2 py-1 bg-[#171D22] rounded-lg"
+                  className="text-xs text-ink-soft hover:text-ink px-2 py-1 bg-surface rounded-lg"
                 >
                   Close
                 </button>
@@ -481,27 +482,27 @@ export const AnalyticsPage: React.FC = () => {
       {/* Summary PR Stat Cards */}
       {historyData.length > 0 && (
         <div className="grid grid-cols-3 gap-3">
-          <div className="glass-card p-3.5 rounded-2xl border border-[#F4F1EA]/10 relative overflow-hidden">
-            <div className="flex items-center gap-1.5 text-[11px] text-[#6B8E78] font-medium uppercase tracking-wider mb-1">
+          <div className="card p-3.5 rounded-2xl border border-line relative overflow-hidden">
+            <div className="flex items-center gap-1.5 text-[11px] text-accent font-medium uppercase tracking-wider mb-1">
               <Trophy className="h-3.5 w-3.5" />
               <span>All-Time PR</span>
             </div>
-            <p className="font-serif text-xl font-bold text-[#F4F1EA]">{prWeight} <span className="text-xs font-sans font-normal text-[#9E9B93]">kg</span></p>
-            <p className="text-[10px] text-[#9E9B93] mt-0.5">Peak Weight</p>
+            <p className="font-display text-xl font-bold tracking-[-0.02em] text-ink">{prWeight} <span className="text-xs font-sans font-normal text-ink-soft">kg</span></p>
+            <p className="text-[10px] text-ink-soft mt-0.5">Peak Weight</p>
           </div>
 
-          <div className="glass-card p-3.5 rounded-2xl border border-[#F4F1EA]/10">
-            <p className="text-[11px] text-[#9E9B93] uppercase tracking-wider font-medium">Logged</p>
-            <p className="font-serif text-xl font-medium text-[#F4F1EA] mt-1">{historyData.length} Times</p>
-            <p className="text-[10px] text-[#9E9B93] mt-0.5">Total Sessions</p>
+          <div className="card p-3.5 rounded-2xl border border-line">
+            <p className="text-[11px] text-ink-soft uppercase tracking-wider font-medium">Logged</p>
+            <p className="font-display text-xl font-bold tracking-[-0.02em] text-ink mt-1">{historyData.length} Times</p>
+            <p className="text-[10px] text-ink-soft mt-0.5">Total Sessions</p>
           </div>
 
-          <div className="glass-card p-3.5 rounded-2xl border border-[#F4F1EA]/10">
-            <p className="text-[11px] text-[#9E9B93] uppercase tracking-wider font-medium">Gain</p>
-            <p className={`font-serif text-xl font-medium mt-1 ${weightGain >= 0 ? 'text-[#6B8E78]' : 'text-[#A85454]'}`}>
+          <div className="card p-3.5 rounded-2xl border border-line">
+            <p className="text-[11px] text-ink-soft uppercase tracking-wider font-medium">Gain</p>
+            <p className={`font-display text-xl font-bold tracking-[-0.02em] mt-1 ${weightGain >= 0 ? 'text-accent' : 'text-danger'}`}>
               {weightGain >= 0 ? `+${weightGain} kg` : `${weightGain} kg`}
             </p>
-            <p className="text-[10px] text-[#9E9B93] mt-0.5">Progress</p>
+            <p className="text-[10px] text-ink-soft mt-0.5">Progress</p>
           </div>
         </div>
       )}

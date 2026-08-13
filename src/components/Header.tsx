@@ -43,16 +43,16 @@ export const Header: React.FC<HeaderProps> = ({ onOpenSettings }) => {
   };
 
   return (
-    <header className="fixed inset-x-0 top-0 z-[60] w-full glass-card border-b border-[#F4F1EA]/10 px-4 pt-[var(--safe-top)] backdrop-blur-md">
+    <header className="fixed inset-x-0 top-0 z-[60] w-full chrome border-b border-line px-4 pt-[var(--safe-top)]">
       <div className="mx-auto flex h-[var(--header-h)] max-w-md items-center justify-between">
         {/* Brand Logo & Title */}
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#171D22] border border-[#F4F1EA]/15 shadow-sm">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-surface border border-line">
             <DumbbellLogo className="h-6 w-6" />
           </div>
           <div>
-            <h1 className="font-serif text-lg font-bold tracking-wider text-[#F4F1EA]">Sessions</h1>
-            {/* <p className="text-[10px] uppercase tracking-widest font-semibold text-[#6B8E78]">Personal Tracker</p> */}
+            <h1 className="font-display text-[1.35rem] font-bold leading-none tracking-[-0.03em] text-ink">Sessions</h1>
+            {/* <p className="text-[10px] uppercase tracking-widest font-semibold text-accent">Personal Tracker</p> */}
           </div>
         </div>
 
@@ -63,15 +63,15 @@ export const Header: React.FC<HeaderProps> = ({ onOpenSettings }) => {
             <button
               onClick={handleManualSync}
               disabled={isSyncing}
-              className="flex items-center gap-1.5 rounded-full bg-[#A85454]/20 border border-[#A85454]/40 px-2.5 py-1 text-xs text-[#F4F1EA] touch-shrink"
+              className="flex items-center gap-1.5 rounded-full bg-danger/20 border border-danger/40 px-2.5 py-1 text-xs text-ink touch-shrink"
               title="Click to sync queued workouts"
             >
-              <RefreshCw className={`h-3 w-3 text-[#A85454] ${isSyncing ? 'animate-spin' : ''}`} />
+              <RefreshCw className={`h-3 w-3 text-danger ${isSyncing ? 'animate-spin' : ''}`} />
               <span className="text-[11px] font-medium">{pendingCount} Queued</span>
             </button>
           ) : (
-            <div className="flex items-center gap-1.5 rounded-full bg-[#6B8E78]/10 border border-[#6B8E78]/25 px-2.5 py-1 text-[11px] text-[#6B8E78]">
-              {isOnline ? <Wifi className="h-3 w-3 text-[#6B8E78]" /> : <WifiOff className="h-3 w-3 text-[#9E9B93]" />}
+            <div className="flex items-center gap-1.5 rounded-full border border-line-strong bg-surface px-2.5 py-1 text-[11px] font-medium text-ink-soft">
+              {isOnline ? <Wifi className="h-3 w-3 text-success" /> : <WifiOff className="h-3 w-3 text-ink-faint" />}
               <span>{settings.googleWebAppUrl ? 'Sheets Connected' : 'Local Only'}</span>
             </div>
           )}
@@ -79,7 +79,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenSettings }) => {
           {/* Settings Toggle */}
           <button
             onClick={onOpenSettings}
-            className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#171D22] border border-[#F4F1EA]/10 text-[#F4F1EA] transition hover:bg-[#1F272E] touch-shrink"
+            className="flex h-10 w-10 items-center justify-center rounded-xl border border-line bg-surface text-ink-soft transition hover:bg-tint hover:text-ink touch-shrink"
             aria-label="Settings"
           >
             <Settings className="h-4 w-4" />

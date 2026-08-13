@@ -27,26 +27,26 @@ export const ModalDrawer: React.FC<ModalDrawerProps> = ({
   return createPortal(
     /* Backdrop. Its top padding reserves the fixed header's strip, so the
        sheet's max-h-full can never resolve tall enough to reach the header. */
-    <div className="fixed inset-0 z-50 flex flex-col items-center justify-end bg-black/70 pt-[var(--header-total)] backdrop-blur-sm sm:justify-center sm:px-4 sm:pb-4 sm:pt-[calc(var(--header-total)+1rem)] animate-fade-in">
+    <div className="fixed inset-0 z-50 flex flex-col items-center justify-end bg-ink/50 pt-[var(--header-total)] backdrop-blur-sm sm:justify-center sm:px-4 sm:pb-4 sm:pt-[calc(var(--header-total)+1rem)] animate-fade-in">
       {/* Backdrop tap to dismiss */}
       <div className="absolute inset-0" onClick={onClose} />
 
       {/* Drawer / Modal Card — same height whatever the content, min-h-0 so a
           tall child can never push the sheet past its cap. */}
-      <div className="relative z-10 mx-auto flex h-[85dvh] max-h-full min-h-0 w-full max-w-md flex-col rounded-t-3xl border border-[#F4F1EA]/15 bg-[#171D22] p-5 pb-[calc(1.25rem+var(--safe-bottom))] shadow-2xl sm:h-[580px] sm:rounded-3xl sm:pb-5 animate-slide-up">
+      <div className="relative z-10 mx-auto flex h-[85dvh] max-h-full min-h-0 w-full max-w-md flex-col rounded-t-3xl border border-line bg-raised p-5 pb-[calc(1.25rem+var(--safe-bottom))] shadow-lg sm:h-[580px] sm:rounded-3xl sm:pb-5 animate-slide-up">
         {/* Handle pill (visible on mobile) */}
-        <div className="mx-auto mb-3 h-1.5 w-12 rounded-full bg-[#F4F1EA]/20 shrink-0 sm:hidden" />
+        <div className="mx-auto mb-3 h-1.5 w-12 rounded-full bg-line-strong shrink-0 sm:hidden" />
 
         {/* Header */}
-        <div className="flex items-center justify-between pb-3 border-b border-[#F4F1EA]/10 shrink-0">
+        <div className="flex items-center justify-between pb-3 border-b border-line shrink-0">
           <div>
-            <h2 className="font-serif text-xl font-medium tracking-wide text-[#F4F1EA]">{title}</h2>
-            {subtitle && <p className="text-xs text-[#9E9B93] mt-0.5">{subtitle}</p>}
+            <h2 className="font-display text-xl font-bold tracking-[-0.02em] text-ink">{title}</h2>
+            {subtitle && <p className="text-xs text-ink-soft mt-0.5">{subtitle}</p>}
           </div>
           <button
             onClick={onClose}
             type="button"
-            className="flex h-8 w-8 items-center justify-center rounded-full bg-[#1F272E] text-[#9E9B93] hover:text-[#F4F1EA] touch-shrink"
+            className="flex h-8 w-8 items-center justify-center rounded-full bg-tint text-ink-soft hover:text-ink touch-shrink"
           >
             <X className="h-4 w-4" />
           </button>

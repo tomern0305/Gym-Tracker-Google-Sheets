@@ -222,7 +222,7 @@ export const ActiveWorkoutPage: React.FC<ActiveWorkoutPageProps> = ({
         particleCount: 80,
         spread: 70,
         origin: { y: 0.6 },
-        colors: ['#6B8E78', '#5B7B88', '#F4F1EA']
+        colors: ['#C2410C', '#18181B', '#A1A1AA']
       });
     } catch (e) { }
 
@@ -241,21 +241,21 @@ export const ActiveWorkoutPage: React.FC<ActiveWorkoutPageProps> = ({
   return (
     <div className="space-y-5 animate-fade-in">
       {/* Header Bar */}
-      <div className="flex items-center justify-between glass-card p-4 rounded-2xl border border-[#F4F1EA]/10">
+      <div className="flex items-center justify-between card p-4 rounded-2xl border border-line">
         <button
           onClick={onCancel}
-          className="flex items-center gap-1.5 text-xs text-[#9E9B93] hover:text-[#F4F1EA] transition touch-shrink"
+          className="flex items-center gap-1.5 text-xs text-ink-soft hover:text-ink transition touch-shrink"
         >
           <ArrowLeft className="h-4 w-4" />
           <span>Exit</span>
         </button>
         <div className="text-center">
-          <span className="text-[10px] uppercase font-semibold text-[#6B8E78] tracking-widest block">Active Session</span>
-          <h2 className="font-serif text-xl font-medium text-[#F4F1EA]">{workoutType}</h2>
+          <span className="text-[10px] uppercase font-semibold text-accent tracking-widest block">Active Session</span>
+          <h2 className="font-display text-xl font-bold tracking-[-0.02em] text-ink">{workoutType}</h2>
         </div>
         <button
           onClick={handleFinishSession}
-          className="flex items-center gap-1 rounded-xl bg-[#6B8E78] px-3.5 py-1.5 text-xs font-semibold text-[#0F1317] hover:bg-[#5C7C68] transition touch-shrink shadow-md font-sans"
+          className="flex items-center gap-1 rounded-xl bg-accent px-3.5 py-1.5 text-xs font-semibold text-on-accent hover:bg-accent-deep transition touch-shrink shadow-md font-sans"
         >
           <CheckCircle2 className="h-4 w-4" />
           <span>Finish</span>
@@ -265,12 +265,12 @@ export const ActiveWorkoutPage: React.FC<ActiveWorkoutPageProps> = ({
       {/* Exercises List */}
       <div className="space-y-3">
         <div className="flex items-center justify-between px-1">
-          <span className="text-xs uppercase font-semibold text-[#9E9B93] tracking-wider">
+          <span className="text-xs uppercase font-semibold text-ink-soft tracking-wider">
             Planned Movements ({exercises.length})
           </span>
           <button
             onClick={() => setShowAddModal(true)}
-            className="flex items-center gap-1 text-xs text-[#6B8E78] hover:text-[#F4F1EA] transition font-medium touch-shrink"
+            className="flex items-center gap-1 text-xs text-accent hover:text-ink transition font-medium touch-shrink"
           >
             <Plus className="h-4 w-4" />
             <span>Add Exercise</span>
@@ -287,7 +287,7 @@ export const ActiveWorkoutPage: React.FC<ActiveWorkoutPageProps> = ({
           return (
             <div
               key={exIdx}
-              className="glass-card p-4 rounded-2xl border border-[#F4F1EA]/10 hover:border-[#6B8E78]/50 transition touch-shrink relative overflow-hidden"
+              className="card p-4 rounded-2xl border border-line hover:border-accent/50 transition touch-shrink relative overflow-hidden"
             >
               <div className="flex items-center justify-between">
                 <div
@@ -295,21 +295,21 @@ export const ActiveWorkoutPage: React.FC<ActiveWorkoutPageProps> = ({
                   onClick={() => setSelectedExIndex(exIdx)}
                 >
                   <div className="flex items-center gap-2">
-                    <span className="text-[10px] uppercase font-semibold text-[#6B8E78] bg-[#6B8E78]/15 px-2 py-0.5 rounded-full border border-[#6B8E78]/30">
+                    <span className="text-[10px] uppercase font-semibold text-accent-deep bg-accent/10 px-2 py-0.5 rounded-full border border-accent/30">
                       {ex.category}
                     </span>
                     {ex.type === 'cardio' && (
-                      <span className="text-[10px] uppercase font-semibold text-[#5B7B88] bg-[#5B7B88]/15 px-2 py-0.5 rounded-full">
+                      <span className="text-[10px] uppercase font-semibold text-success bg-success/10 px-2 py-0.5 rounded-full">
                         Cardio
                       </span>
                     )}
                   </div>
-                  <h3 className="font-serif text-lg font-medium text-[#F4F1EA] mt-1">{ex.exerciseName}</h3>
+                  <h3 className="font-display text-lg font-semibold tracking-[-0.01em] text-ink mt-1">{ex.exerciseName}</h3>
 
                   {/* Previous Benchmark Reference */}
                   {exBenchmark && (
-                    <div className="flex items-center gap-1 text-[11px] text-[#9E9B93] mt-1">
-                      <History className="h-3 w-3 text-[#6B8E78]" />
+                    <div className="flex items-center gap-1 text-[11px] text-ink-soft mt-1">
+                      <History className="h-3 w-3 text-accent" />
                       <span>Prev: {exBenchmark.setsSummary || exBenchmark.cardioSummary}</span>
                     </div>
                   )}
@@ -317,16 +317,16 @@ export const ActiveWorkoutPage: React.FC<ActiveWorkoutPageProps> = ({
 
                 <div className="flex items-center gap-3">
                   <div className="text-right">
-                    <span className="text-xs font-mono font-medium text-[#F4F1EA] block">
+                    <span className="text-xs font-mono font-medium text-ink block">
                       {completedCount}/{totalCount}
                     </span>
-                    <span className="text-[10px] text-[#9E9B93] block">Sets</span>
+                    <span className="text-[10px] text-ink-soft block">Sets</span>
                   </div>
 
                   {/* Open Detail button */}
                   <button
                     onClick={() => setSelectedExIndex(exIdx)}
-                    className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#1F272E] text-[#6B8E78] border border-[#F4F1EA]/10 touch-shrink"
+                    className="flex h-10 w-10 items-center justify-center rounded-xl bg-tint text-accent border border-line touch-shrink"
                   >
                     <ChevronRight className="h-5 w-5" />
                   </button>
@@ -334,7 +334,7 @@ export const ActiveWorkoutPage: React.FC<ActiveWorkoutPageProps> = ({
                   {/* Remove Ad-Hoc exercise */}
                   <button
                     onClick={() => handleRemoveAdHocExercise(exIdx)}
-                    className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#A85454]/15 text-[#A85454] hover:bg-[#A85454] hover:text-[#0F1317] transition touch-shrink"
+                    className="flex h-8 w-8 items-center justify-center rounded-lg bg-danger/15 text-danger hover:bg-danger hover:text-on-accent transition touch-shrink"
                     title="Remove from today's workout"
                   >
                     <Trash2 className="h-4 w-4" />
@@ -356,11 +356,11 @@ export const ActiveWorkoutPage: React.FC<ActiveWorkoutPageProps> = ({
         >
           {/* Historical Reference Alert Box */}
           {/* {benchmark && (
-            <div className="mb-4 glass-card p-3 rounded-xl border border-[#6B8E78]/30 bg-[#6B8E78]/10 flex items-start gap-2.5">
-              <History className="h-4 w-4 text-[#6B8E78] mt-0.5 shrink-0" />
+            <div className="mb-4 card p-3 rounded-xl border border-accent/30 bg-accent/10 flex items-start gap-2.5">
+              <History className="h-4 w-4 text-accent mt-0.5 shrink-0" />
               <div>
-                <span className="text-xs font-semibold text-[#6B8E78] block">Last Session Benchmark ({benchmark.date})</span>
-                <span className="text-xs text-[#F4F1EA] font-mono">{benchmark.setsSummary || benchmark.cardioSummary}</span>
+                <span className="text-xs font-semibold text-accent block">Last Session Benchmark ({benchmark.date})</span>
+                <span className="text-xs text-ink font-mono">{benchmark.setsSummary || benchmark.cardioSummary}</span>
               </div>
             </div>
           )} */}
@@ -368,7 +368,7 @@ export const ActiveWorkoutPage: React.FC<ActiveWorkoutPageProps> = ({
           {/* Strength Set Logging */}
           {activeExercise.type === 'strength' ? (
             <div className="space-y-3">
-              <div className="grid grid-cols-12 gap-2 text-[11px] font-semibold uppercase text-[#9E9B93] px-2 text-center">
+              <div className="grid grid-cols-12 gap-2 text-[11px] font-semibold uppercase text-ink-soft px-2 text-center">
                 <span className="col-span-2">Set</span>
                 <span className="col-span-4">Weight (kg)</span>
                 <span className="col-span-4">Reps</span>
@@ -379,17 +379,17 @@ export const ActiveWorkoutPage: React.FC<ActiveWorkoutPageProps> = ({
                 <div
                   key={sIdx}
                   className={`grid grid-cols-12 gap-2 items-center p-2.5 rounded-xl border transition ${set.completed
-                      ? 'bg-[#6B8E78]/15 border-[#6B8E78]/40'
-                      : 'bg-[#0F1317] border-[#F4F1EA]/10'
+                      ? 'bg-accent/15 border-accent/40'
+                      : 'bg-raised border-line'
                     }`}
                 >
-                  <span className="col-span-2 text-center text-xs font-bold text-[#F4F1EA]">#{set.setNumber}</span>
+                  <span className="col-span-2 text-center text-xs font-bold text-ink">#{set.setNumber}</span>
 
                   {/* Weight Input */}
-                  <div className="col-span-4 flex items-center bg-[#171D22] border border-[#F4F1EA]/15 rounded-lg px-1.5 py-1">
+                  <div className="col-span-4 flex items-center bg-surface border border-line rounded-lg px-1.5 py-1">
                     <button
                       onClick={() => handleUpdateSet(selectedExIndex, sIdx, 'weightKg', set.weightKg - 2.5)}
-                      className="text-xs text-[#9E9B93] px-1 hover:text-[#F4F1EA]"
+                      className="text-xs text-ink-soft px-1 hover:text-ink"
                     >
                       -
                     </button>
@@ -397,21 +397,21 @@ export const ActiveWorkoutPage: React.FC<ActiveWorkoutPageProps> = ({
                       type="number"
                       value={set.weightKg}
                       onChange={(e) => handleUpdateSet(selectedExIndex, sIdx, 'weightKg', parseFloat(e.target.value) || 0)}
-                      className="w-full text-center text-sm font-mono font-bold text-[#F4F1EA] bg-transparent focus:outline-none"
+                      className="w-full text-center text-sm font-mono font-bold text-ink bg-transparent focus:outline-none"
                     />
                     <button
                       onClick={() => handleUpdateSet(selectedExIndex, sIdx, 'weightKg', set.weightKg + 2.5)}
-                      className="text-xs text-[#9E9B93] px-1 hover:text-[#F4F1EA]"
+                      className="text-xs text-ink-soft px-1 hover:text-ink"
                     >
                       +
                     </button>
                   </div>
 
                   {/* Reps Input */}
-                  <div className="col-span-4 flex items-center bg-[#171D22] border border-[#F4F1EA]/15 rounded-lg px-1.5 py-1">
+                  <div className="col-span-4 flex items-center bg-surface border border-line rounded-lg px-1.5 py-1">
                     <button
                       onClick={() => handleUpdateSet(selectedExIndex, sIdx, 'reps', set.reps - 1)}
-                      className="text-xs text-[#9E9B93] px-1 hover:text-[#F4F1EA]"
+                      className="text-xs text-ink-soft px-1 hover:text-ink"
                     >
                       -
                     </button>
@@ -419,11 +419,11 @@ export const ActiveWorkoutPage: React.FC<ActiveWorkoutPageProps> = ({
                       type="number"
                       value={set.reps}
                       onChange={(e) => handleUpdateSet(selectedExIndex, sIdx, 'reps', parseInt(e.target.value) || 0)}
-                      className="w-full text-center text-sm font-mono font-bold text-[#F4F1EA] bg-transparent focus:outline-none"
+                      className="w-full text-center text-sm font-mono font-bold text-ink bg-transparent focus:outline-none"
                     />
                     <button
                       onClick={() => handleUpdateSet(selectedExIndex, sIdx, 'reps', set.reps + 1)}
-                      className="text-xs text-[#9E9B93] px-1 hover:text-[#F4F1EA]"
+                      className="text-xs text-ink-soft px-1 hover:text-ink"
                     >
                       +
                     </button>
@@ -434,8 +434,8 @@ export const ActiveWorkoutPage: React.FC<ActiveWorkoutPageProps> = ({
                     <button
                       onClick={() => handleToggleSetComplete(selectedExIndex, sIdx)}
                       className={`h-8 w-8 rounded-lg flex items-center justify-center border transition touch-shrink ${set.completed
-                          ? 'bg-[#6B8E78] border-[#6B8E78] text-[#0F1317]'
-                          : 'bg-[#171D22] border-[#F4F1EA]/20 text-[#9E9B93]'
+                          ? 'bg-accent border-accent text-on-accent'
+                          : 'bg-surface border-line text-ink-soft'
                         }`}
                     >
                       <Check className="h-4 w-4 stroke-[3]" />
@@ -446,7 +446,7 @@ export const ActiveWorkoutPage: React.FC<ActiveWorkoutPageProps> = ({
 
               <button
                 onClick={() => handleAddSet(selectedExIndex)}
-                className="w-full py-2.5 rounded-xl border border-dashed border-[#F4F1EA]/20 text-xs font-medium text-[#6B8E78] hover:border-[#6B8E78] transition touch-shrink mt-2"
+                className="w-full py-2.5 rounded-xl border border-dashed border-line text-xs font-medium text-accent hover:border-accent transition touch-shrink mt-2"
               >
                 + Add Set
               </button>
@@ -455,21 +455,21 @@ export const ActiveWorkoutPage: React.FC<ActiveWorkoutPageProps> = ({
             /* Cardio Logging */
             <div className="space-y-4">
               {/* Cardio Live Timer Pill */}
-              <div className="glass-card p-4 rounded-2xl border border-[#5B7B88]/40 bg-[#5B7B88]/10 text-center">
-                <span className="text-xs text-[#5B7B88] font-semibold uppercase tracking-wider block">Live Cardio Timer</span>
-                <span className="font-mono text-3xl font-bold text-[#F4F1EA] block my-1">{formatTimer(timerSeconds)}</span>
+              <div className="card p-4 rounded-2xl border border-success/40 bg-success/10 text-center">
+                <span className="text-xs text-success font-semibold uppercase tracking-wider block">Live Cardio Timer</span>
+                <span className="font-mono text-3xl font-bold text-ink block my-1">{formatTimer(timerSeconds)}</span>
 
                 <div className="flex justify-center gap-2 mt-2">
                   <button
                     onClick={() => setTimerActive(!timerActive)}
-                    className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-[#5B7B88] text-[#0F1317] font-semibold text-xs touch-shrink"
+                    className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-success text-on-accent font-semibold text-xs touch-shrink"
                   >
                     {timerActive ? <Pause className="h-3.5 w-3.5" /> : <Play className="h-3.5 w-3.5" />}
                     <span>{timerActive ? 'Pause' : 'Start Timer'}</span>
                   </button>
                   <button
                     onClick={() => { setTimerActive(false); setTimerSeconds(0); }}
-                    className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-[#1F272E] text-[#9E9B93] text-xs touch-shrink"
+                    className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-tint text-ink-soft text-xs touch-shrink"
                   >
                     <RotateCcw className="h-3.5 w-3.5" />
                     <span>Reset</span>
@@ -480,26 +480,26 @@ export const ActiveWorkoutPage: React.FC<ActiveWorkoutPageProps> = ({
               {/* Cardio Inputs */}
               <div className="space-y-3">
                 <div>
-                  <label className="block text-xs text-[#9E9B93] uppercase font-semibold mb-1">
+                  <label className="block text-xs text-ink-soft uppercase font-semibold mb-1">
                     Duration (Minutes)
                   </label>
                   <input
                     type="number"
                     value={activeExercise.cardio?.durationMin || 0}
                     onChange={(e) => handleUpdateCardio(selectedExIndex, 'durationMin', parseInt(e.target.value) || 0)}
-                    className="w-full rounded-xl bg-[#0F1317] border border-[#F4F1EA]/15 p-3 text-lg font-mono font-bold text-[#F4F1EA]"
+                    className="w-full rounded-xl bg-raised border border-line p-3 text-lg font-mono font-bold text-ink"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs text-[#9E9B93] uppercase font-semibold mb-1">
+                  <label className="block text-xs text-ink-soft uppercase font-semibold mb-1">
                     Resistance / Incline Level
                   </label>
                   <input
                     type="number"
                     value={activeExercise.cardio?.resistanceLevel || 0}
                     onChange={(e) => handleUpdateCardio(selectedExIndex, 'resistanceLevel', parseInt(e.target.value) || 0)}
-                    className="w-full rounded-xl bg-[#0F1317] border border-[#F4F1EA]/15 p-3 text-lg font-mono font-bold text-[#F4F1EA]"
+                    className="w-full rounded-xl bg-raised border border-line p-3 text-lg font-mono font-bold text-ink"
                   />
                 </div>
               </div>
@@ -508,7 +508,7 @@ export const ActiveWorkoutPage: React.FC<ActiveWorkoutPageProps> = ({
 
           <button
             onClick={() => setSelectedExIndex(null)}
-            className="mt-6 w-full rounded-xl bg-[#6B8E78] py-3 text-sm font-semibold text-[#0F1317] hover:bg-[#5C7C68] transition touch-shrink"
+            className="mt-6 w-full rounded-xl bg-accent py-3 text-sm font-semibold text-on-accent hover:bg-accent-deep transition touch-shrink"
           >
             Save Exercise Details
           </button>
@@ -528,13 +528,13 @@ export const ActiveWorkoutPage: React.FC<ActiveWorkoutPageProps> = ({
               <button
                 key={ex.id}
                 onClick={() => handleAddAdHocExercise(ex)}
-                className="w-full flex items-center justify-between p-3 rounded-xl glass-card border border-[#F4F1EA]/10 hover:border-[#6B8E78] transition touch-shrink text-left"
+                className="w-full flex items-center justify-between p-3 rounded-xl card border border-line hover:border-accent transition touch-shrink text-left"
               >
                 <div>
-                  <span className="font-medium text-sm text-[#F4F1EA] block">{ex.name}</span>
-                  <span className="text-[10px] text-[#9E9B93] uppercase font-semibold">{ex.category} • {ex.type}</span>
+                  <span className="font-medium text-sm text-ink block">{ex.name}</span>
+                  <span className="text-[10px] text-ink-soft uppercase font-semibold">{ex.category} • {ex.type}</span>
                 </div>
-                <Plus className="h-4 w-4 text-[#6B8E78]" />
+                <Plus className="h-4 w-4 text-accent" />
               </button>
             ))}
           </div>

@@ -8,17 +8,25 @@
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
 
+  <!-- Inter for everything, JetBrains Mono for weights and reps.
+       display=swap so text is never invisible while loading. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet" />
+
   <!-- {/* iOS Native App Shell Meta Tags */} -->
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="apple-mobile-web-app-title" content="Sessions" />
-  <meta name="theme-color" content="#0F1317" />
+  <meta name="theme-color" content="#F4F4F5" />
 
   <title>Sessions</title>
 </head>
 
-<body class="bg-[#0F1317] text-[#F4F1EA] antialiased selection:bg-[#6B8E78] selection:text-[#0F1317]">
+<body class="bg-page text-ink antialiased selection:bg-accent selection:text-on-accent">
   <div id="root"></div>
   <script type="module" src="/src/main.tsx"></script>
 </body>

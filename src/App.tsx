@@ -48,7 +48,7 @@ export function App() {
   const showBottomNav = !activeWorkoutConfig && !showSettings;
 
   return (
-    <div className="min-h-[100dvh] bg-[#0F1317] text-[#F4F1EA] flex flex-col font-sans selection:bg-[#6B8E78] selection:text-[#0F1317]">
+    <div className="min-h-[100dvh] bg-page text-ink flex flex-col font-sans selection:bg-accent selection:text-on-accent">
       {/* Header */}
       <Header
         onOpenSettings={() => setShowSettings(true)}
