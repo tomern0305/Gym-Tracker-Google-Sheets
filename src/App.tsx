@@ -8,10 +8,11 @@ import { ActiveWorkoutPage } from './pages/ActiveWorkoutPage';
 import { TemplatesPage } from './pages/TemplatesPage';
 import { ExercisesPage } from './pages/ExercisesPage';
 import { SettingsPage } from './pages/SettingsPage';
-import { 
-  fetchAllFromGoogleSheets, 
-  processPendingSyncQueue 
+import {
+  fetchAllFromGoogleSheets,
+  processPendingSyncQueue
 } from './services/storage';
+import { startUpdateWatcher } from './services/appUpdate';
 import type { WorkoutTemplate } from './types';
 
 export function App() {
@@ -28,6 +29,7 @@ export function App() {
     // Auto fetch cloud logs & process any pending offline queue on app launch
     fetchAllFromGoogleSheets();
     processPendingSyncQueue();
+    return startUpdateWatcher();
   }, []);
 
   const handleStartWorkout = (workoutType: string, template?: WorkoutTemplate) => {
